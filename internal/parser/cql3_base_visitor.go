@@ -100,6 +100,10 @@ func (v *BaseCql3Visitor) VisitListUsersStatement(ctx *ListUsersStatementContext
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitListSuperUsersStatement(ctx *ListSuperUsersStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitIdentIdent(ctx *IdentIdentContext) interface{} {
 	return v.VisitChildren(ctx)
 }

@@ -1313,6 +1313,17 @@ func TestParseStatementListUsers(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.ListUsersStatement() })
 }
 
+func TestParseStatementListSuperUsers(t *testing.T) {
+	cases := []testCase{
+		{
+			input:    "list superusers",
+			expected: &ast.ListSuperUsersStatement{},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.ListSuperUsersStatement() })
+}
+
 func TestParseStatementDropKeyspace(t *testing.T) {
 	cases := []testCase{
 		{

@@ -61,7 +61,7 @@ cqlStatement
 //     | st41=describeStatement               { $stmt = st41; }
 //     | st42=addIdentityStatement            { $stmt = st42; }
 //     | st43=dropIdentityStatement           { $stmt = st43; }
-//     | st44=listSuperUsersStatement         { $stmt = st44; }
+       | st44=listSuperUsersStatement
     ;
 
 // /*
@@ -1212,14 +1212,14 @@ listUsersStatement
 //       { $stmt = new ListRolesStatement(grantee, recursive); }
 //     ;
 
-// /**
-//  * LIST SUPERUSERS
-//  */
-// listSuperUsersStatement
-//     @init {
-//     }
-//     : K_LIST K_SUPERUSERS { $stmt = new ListSuperUsersStatement(); }
-//     ;
+/**
+ * LIST SUPERUSERS
+ */
+listSuperUsersStatement
+    @init {
+    }
+    : K_LIST K_SUPERUSERS
+    ;
 
 // roleOptions[RoleOptions opts, DCPermissions.Builder dcperms, CIDRPermissions.Builder cidrperms]
 //     : roleOption[opts, dcperms, cidrperms] (K_AND roleOption[opts, dcperms, cidrperms])*

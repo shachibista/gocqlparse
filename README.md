@@ -53,5 +53,5 @@ go get github.com/shachibista/gocqlparse
 | `DESCRIBE`                      |                    | Moderate
 | `ADD IDENTITY`                  |                    | Easy
 | `DROP IDENTITY`                 |                    | Easy
-| `LIST SUPER USERS`              |                    | Easy
+| `LIST SUPER USERS`              | :white_check_mark: |
 

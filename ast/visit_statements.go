@@ -150,6 +150,10 @@ func (v *Visitor) VisitListUsersStatement(ctx *parser.ListUsersStatementContext)
 	return &ListUsersStatement{}
 }
 
+func (v *Visitor) VisitListSuperUsersStatement(ctx *parser.ListSuperUsersStatementContext) any {
+	return &ListSuperUsersStatement{}
+}
+
 func (v *Visitor) VisitDropKeyspaceStatement(ctx *parser.DropKeyspaceStatementContext) any {
 	ks := v.Visit(ctx.KeyspaceName()).(Identifier)
 

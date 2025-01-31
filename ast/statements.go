@@ -71,7 +71,10 @@ type DropTypeStatement struct {
 	Name     *ObjectRef
 }
 
-type ListUsersStatement struct{}
+type (
+	ListUsersStatement      struct{}
+	ListSuperUsersStatement struct{}
+)
 
 type DropKeyspaceStatement struct {
 	IfExists bool
