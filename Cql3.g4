@@ -44,7 +44,7 @@ cqlStatement
 //     | st24=dropTriggerStatement            { $stmt = st24; }
        | st25=createTypeStatement
 //     | st26=alterTypeStatement              { $stmt = st26; }
-//     | st27=dropTypeStatement               { $stmt = st27; }
+       | st27=dropTypeStatement
 //     | st28=createFunctionStatement         { $stmt = st28; }
 //     | st29=dropFunctionStatement           { $stmt = st29; }
 //     | st30=createAggregateStatement        { $stmt = st30; }
@@ -851,13 +851,12 @@ dropTableStatement
     : K_DROP K_COLUMNFAMILY ifExists? name=columnFamilyName
     ;
 
-// /**
-//  * DROP TYPE <name>;
-//  */
-// dropTypeStatement returns [DropTypeStatement.Raw stmt]
-//     @init { boolean ifExists = false; }
-//     : K_DROP K_TYPE (K_IF K_EXISTS { ifExists = true; } )? name=userTypeName { $stmt = new DropTypeStatement.Raw(name, ifExists); }
-//     ;
+/**
+ * DROP TYPE <name>;
+ */
+dropTypeStatement
+    : K_DROP K_TYPE ifExists? name=userTypeName
+    ;
 
 // /**
 //  * DROP INDEX [IF EXISTS] <INDEX_NAME>

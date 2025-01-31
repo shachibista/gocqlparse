@@ -1269,6 +1269,39 @@ func TestParseStatementCreateKeyspace(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.CreateKeyspaceStatement() })
 }
 
+func TestParseStatementDropType(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "drop type ks.test",
+			expected: &ast.DropTypeStatement{
+				Name: &ast.ObjectRef{
+					Keyspace: ast.UnquotedIdentifier("ks"),
+					Name:     ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "drop type test",
+			expected: &ast.DropTypeStatement{
+				Name: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "drop type if exists test",
+			expected: &ast.DropTypeStatement{
+				IfExists: true,
+				Name: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropTypeStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

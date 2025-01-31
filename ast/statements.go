@@ -65,3 +65,8 @@ type CreateKeyspaceStatement struct {
 	Name        Identifier
 	Properties  []*Property
 }
+
+type DropTypeStatement struct {
+	IfExists bool
+	Name     *ObjectRef
+}

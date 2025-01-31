@@ -136,3 +136,12 @@ func (v *Visitor) VisitCreateKeyspaceStatement(ctx *parser.CreateKeyspaceStateme
 		Properties:  props,
 	}
 }
+
+func (v *Visitor) VisitDropTypeStatement(ctx *parser.DropTypeStatementContext) any {
+	name := v.Visit(ctx.UserTypeName()).(*ObjectRef)
+
+	return &DropTypeStatement{
+		Name:     name,
+		IfExists: ctx.IfExists() != nil,
+	}
+}
