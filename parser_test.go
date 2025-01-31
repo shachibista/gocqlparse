@@ -1207,6 +1207,22 @@ func TestParseStatementDropTable(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropTableStatement() })
 }
 
+func TestParseStatementTruncate(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "truncate ks.test",
+			expected: &ast.TruncateStatement{
+				ColumnFamily: &ast.ObjectRef{
+					Keyspace: ast.UnquotedIdentifier("ks"),
+					Name:     ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.TruncateStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

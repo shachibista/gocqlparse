@@ -115,3 +115,11 @@ func (v *Visitor) VisitDropTableStatement(ctx *parser.DropTableStatementContext)
 		IfExists:     ctx.IfExists() != nil,
 	}
 }
+
+func (v *Visitor) VisitTruncateStatement(ctx *parser.TruncateStatementContext) any {
+	cf := v.Visit(ctx.ColumnFamilyName()).(*ObjectRef)
+
+	return &TruncateStatement{
+		ColumnFamily: cf,
+	}
+}

@@ -55,3 +55,7 @@ type DropTableStatement struct {
 	IfExists     bool
 	ColumnFamily *ObjectRef
 }
+
+type TruncateStatement struct {
+	ColumnFamily *ObjectRef
+}

@@ -23,10 +23,10 @@ cqlStatement
 //     | st3= updateStatement                 { $stmt = st3; }
 //     | st4= batchStatement                  { $stmt = st4; }
 //     | st5= deleteStatement                 { $stmt = st5; }
-        : st6= useStatement
-//     | st7= truncateStatement               { $stmt = st7; }
+       : st6= useStatement
+       | st7= truncateStatement
 //     | st8= createKeyspaceStatement         { $stmt = st8; }
-        | st9= createTableStatement
+       | st9= createTableStatement
 //     | st10=createIndexStatement            { $stmt = st10; }
 //     | st11=dropKeyspaceStatement           { $stmt = st11; }
        | st12=dropTableStatement
@@ -884,9 +884,9 @@ dropTableStatement
 // /**
 //   * TRUNCATE <CF>;
 //   */
-// truncateStatement returns [TruncateStatement stmt]
-//     : K_TRUNCATE (K_COLUMNFAMILY)? cf=columnFamilyName { $stmt = new TruncateStatement(cf); }
-//     ;
+truncateStatement
+    : K_TRUNCATE (K_COLUMNFAMILY)? cf=columnFamilyName
+    ;
 
 // /**
 //  * GRANT <permission>[, <permission>]* | ALL ON <resource> TO <rolename>

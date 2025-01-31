@@ -80,6 +80,10 @@ func (v *BaseCql3Visitor) VisitDropTableStatement(ctx *DropTableStatementContext
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitTruncateStatement(ctx *TruncateStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitIdentIdent(ctx *IdentIdentContext) interface{} {
 	return v.VisitChildren(ctx)
 }
