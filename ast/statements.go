@@ -145,3 +145,9 @@ type AlterKeyspaceStatement struct {
 	Keyspace   Identifier
 	Properties []*Property
 }
+
+type AlterMaterializedViewStatement struct {
+	IfExists   bool
+	Name       *ObjectRef
+	Properties []*Property
+}

@@ -259,3 +259,11 @@ func (v *Visitor) VisitDropTriggerStatement(ctx *parser.DropTriggerStatementCont
 		On:       v.Visit(ctx.GetCf()).(*ObjectRef),
 	}
 }
+
+func (v *Visitor) VisitAlterMaterializedViewStatement(ctx *parser.AlterMaterializedViewStatementContext) any {
+	return &AlterMaterializedViewStatement{
+		IfExists:   ctx.IfExists() != nil,
+		Name:       v.Visit(ctx.GetName()).(*ObjectRef),
+		Properties: v.Visit(ctx.Properties()).([]*Property),
+	}
+}

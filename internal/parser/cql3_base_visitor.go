@@ -92,6 +92,10 @@ func (v *BaseCql3Visitor) VisitAlterKeyspaceStatement(ctx *AlterKeyspaceStatemen
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitAlterMaterializedViewStatement(ctx *AlterMaterializedViewStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitDropKeyspaceStatement(ctx *DropKeyspaceStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }

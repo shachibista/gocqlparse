@@ -1669,6 +1669,34 @@ func TestParseStatementDropTrigger(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropTriggerStatement() })
 }
 
+func TestParseStatementAlterMaterializedView(t *testing.T) {
+	cases := []testCase{
+		{
+			input: `ALTER MATERIALIZED VIEW cycling.cyclist_by_age 
+WITH caching = { 
+   'keys' : 'NONE', 
+   'rows_per_partition' : '15' }`,
+			expected: &ast.AlterMaterializedViewStatement{
+				Name: &ast.ObjectRef{
+					Keyspace: ast.UnquotedIdentifier("cycling"),
+					Name:     ast.UnquotedIdentifier("cyclist_by_age"),
+				},
+				Properties: []*ast.Property{
+					{
+						Key: ast.UnquotedIdentifier("caching"),
+						Value: &ast.MapLiteral{
+							"keys":               "NONE",
+							"rows_per_partition": "15",
+						},
+					},
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.AlterMaterializedViewStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

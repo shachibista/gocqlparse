@@ -57,7 +57,7 @@ cqlStatement
        | st37=revokeRoleStatement
 //     | st38=createMaterializedViewStatement { $stmt = st38; }
        | st39=dropMaterializedViewStatement
-//     | st40=alterMaterializedViewStatement  { $stmt = st40; }
+       | st40=alterMaterializedViewStatement
 //     | st41=describeStatement               { $stmt = st41; }
        | st42=addIdentityStatement
        | st43=dropIdentityStatement
@@ -793,17 +793,10 @@ alterKeyspaceStatement
 //     : (K_STATIC { isStatic=true; })? { $isStaticColumn = isStatic; }
 //     ;
 
-// alterMaterializedViewStatement
-//     @init {
-//         TableAttributes attrs = new TableAttributes();
-//         boolean ifExists = false;
-//     }
-//     : K_ALTER K_MATERIALIZED K_VIEW (K_IF K_EXISTS { ifExists = true; } )? name=columnFamilyName
-//           K_WITH properties[attrs]
-//     {
-//         $stmt = new AlterViewStatement.Raw(name, attrs, ifExists);
-//     }
-//     ;
+alterMaterializedViewStatement
+    : K_ALTER K_MATERIALIZED K_VIEW ifExists? name=columnFamilyName
+          K_WITH properties
+    ;
 
 
 // /**
