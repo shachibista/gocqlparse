@@ -101,3 +101,8 @@ type DropIndexStatement struct {
 	IfExists bool
 	Name     *ObjectRef
 }
+
+type DropMaterializedViewStatement struct {
+	IfExists bool
+	Name     *ObjectRef
+}

@@ -191,3 +191,10 @@ func (v *Visitor) VisitDropIndexStatement(ctx *parser.DropIndexStatementContext)
 		Name:     v.Visit(ctx.IndexName()).(*ObjectRef),
 	}
 }
+
+func (v *Visitor) VisitDropMaterializedViewStatement(ctx *parser.DropMaterializedViewStatementContext) any {
+	return &DropMaterializedViewStatement{
+		IfExists: ctx.IfExists() != nil,
+		Name:     v.Visit(ctx.ColumnFamilyName()).(*ObjectRef),
+	}
+}

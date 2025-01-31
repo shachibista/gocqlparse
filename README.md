@@ -48,7 +48,7 @@ go get github.com/shachibista/gocqlparse
 | `GRANT ROLE`                    |                    | Easy
 | `REVOKE ROLE`                   |                    | Easy
 | `CREATE MATERIALIZED VIEW`      |                    | Hard
-| `DROP MATERIALIZED VIEW`        |                    | Easy
+| `DROP MATERIALIZED VIEW`        | :white_check_mark: |
 | `ALTER MATERIALIZED VIEW`       |                    | Easy
 | `DESCRIBE`                      |                    | Moderate
 | `ADD IDENTITY`                  | :white_check_mark: |

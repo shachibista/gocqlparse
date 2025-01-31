@@ -56,7 +56,7 @@ cqlStatement
 //     | st36=grantRoleStatement              { $stmt = st36; }
 //     | st37=revokeRoleStatement             { $stmt = st37; }
 //     | st38=createMaterializedViewStatement { $stmt = st38; }
-//     | st39=dropMaterializedViewStatement   { $stmt = st39; }
+       | st39=dropMaterializedViewStatement
 //     | st40=alterMaterializedViewStatement  { $stmt = st40; }
 //     | st41=describeStatement               { $stmt = st41; }
        | st42=addIdentityStatement
@@ -867,11 +867,9 @@ dropIndexStatement
 // /**
 //  * DROP MATERIALIZED VIEW [IF EXISTS] <view_name>
 //  */
-// dropMaterializedViewStatement
-//     @init { boolean ifExists = false; }
-//     : K_DROP K_MATERIALIZED K_VIEW (K_IF K_EXISTS { ifExists = true; } )? cf=columnFamilyName
-//       { $stmt = new DropViewStatement.Raw(cf, ifExists); }
-//     ;
+dropMaterializedViewStatement
+    : K_DROP K_MATERIALIZED K_VIEW ifExists? cf=columnFamilyName
+    ;
 
 // /**
 //   * TRUNCATE <CF>;

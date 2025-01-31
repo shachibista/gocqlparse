@@ -1470,6 +1470,30 @@ func TestParseStatementDropIndex(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropIndexStatement() })
 }
 
+func TestParseStatementDropMaterializedView(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "drop materialized view test",
+			expected: &ast.DropMaterializedViewStatement{
+				Name: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "drop materialized view if exists test",
+			expected: &ast.DropMaterializedViewStatement{
+				IfExists: true,
+				Name: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropMaterializedViewStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

@@ -96,6 +96,10 @@ func (v *BaseCql3Visitor) VisitDropIndexStatement(ctx *DropIndexStatementContext
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitDropMaterializedViewStatement(ctx *DropMaterializedViewStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitTruncateStatement(ctx *TruncateStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
