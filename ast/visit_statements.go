@@ -184,3 +184,10 @@ func (v *Visitor) VisitDropUserStatement(ctx *parser.DropUserStatementContext) a
 		Username: v.Visit(ctx.Username()).(Identifier),
 	}
 }
+
+func (v *Visitor) VisitDropIndexStatement(ctx *parser.DropIndexStatementContext) any {
+	return &DropIndexStatement{
+		IfExists: ctx.IfExists() != nil,
+		Name:     v.Visit(ctx.IndexName()).(*ObjectRef),
+	}
+}

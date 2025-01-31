@@ -22,7 +22,7 @@ go get github.com/shachibista/gocqlparse
 | `CREATE INDEX`                  |                    | Moderate
 | `DROP KEYSPACE`                 | :white_check_mark: |
 | `DROP TABLE`                    | :white_check_mark: |
-| `DROP INDEX`                    |                    | Easy
+| `DROP INDEX`                    | :white_check_mark: |
 | `ALTER TABLE`                   |                    | Hard
 | `ALTER KEYSPACE`                |                    | Easy
 | `GRANT PERMISSIONS`             |                    | Moderate

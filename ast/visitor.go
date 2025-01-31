@@ -517,6 +517,37 @@ func (v *Visitor) VisitUsername(ctx *parser.UsernameContext) any {
 	return nil
 }
 
+func (v *Visitor) VisitIndexName(ctx *parser.IndexNameContext) any {
+	var keyspace Identifier
+	if ctx.KsName() != nil {
+		keyspace = v.Visit(ctx.KsName()).(Identifier)
+	}
+
+	ident := v.Visit(ctx.IdxName()).(Identifier)
+
+	return &ObjectRef{
+		Keyspace: keyspace,
+		Name:     ident,
+	}
+}
+
+func (v *Visitor) VisitIdxName(ctx *parser.IdxNameContext) any {
+	if ctx.IDENT() != nil {
+		return visitIdent(ctx)
+	}
+
+	if ctx.QUOTED_NAME() != nil {
+		return visitQuotedIdent(ctx)
+	}
+
+	if ctx.Unreserved_keyword() != nil {
+		return visitIdent(ctx)
+	}
+
+	v.Err(ctx, "bind variables cannot be used for index names")
+	return nil
+}
+
 func visitIdent(ctx antlr.ParserRuleContext) Identifier {
 	id := ctx.GetText()
 

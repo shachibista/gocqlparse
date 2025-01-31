@@ -96,3 +96,8 @@ type DropUserStatement struct {
 	IfExists bool
 	Username Identifier
 }
+
+type DropIndexStatement struct {
+	IfExists bool
+	Name     *ObjectRef
+}

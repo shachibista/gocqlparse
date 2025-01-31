@@ -30,7 +30,7 @@ cqlStatement
 //     | st10=createIndexStatement            { $stmt = st10; }
        | st11=dropKeyspaceStatement
        | st12=dropTableStatement
-//     | st13=dropIndexStatement              { $stmt = st13; }
+       | st13=dropIndexStatement
 //     | st14=alterTableStatement             { $stmt = st14; }
 //     | st15=alterKeyspaceStatement          { $stmt = st15; }
 //     | st16=grantPermissionsStatement       { $stmt = st16; }
@@ -857,14 +857,12 @@ dropTypeStatement
     : K_DROP K_TYPE ifExists? name=userTypeName
     ;
 
-// /**
-//  * DROP INDEX [IF EXISTS] <INDEX_NAME>
-//  */
-// dropIndexStatement
-//     @init { boolean ifExists = false; }
-//     : K_DROP K_INDEX (K_IF K_EXISTS { ifExists = true; } )? index=indexName
-//       { $stmt = new DropIndexStatement.Raw(index, ifExists); }
-//     ;
+/**
+ * DROP INDEX [IF EXISTS] <INDEX_NAME>
+ */
+dropIndexStatement
+    : K_DROP K_INDEX ifExists? index=indexName
+    ;
 
 // /**
 //  * DROP MATERIALIZED VIEW [IF EXISTS] <view_name>
@@ -1315,10 +1313,9 @@ keyspaceName
     : ksName
     ;
 
-// indexName
-//     @init { $name = new QualifiedName(); }
-//     : (ksName[name] '.')? idxName[name]
-//     ;
+indexName
+    : (ksName '.')? idxName
+    ;
 
 columnFamilyName
     : (ksName '.')? cfName
@@ -1347,12 +1344,12 @@ cfName
     | QMARK                     # CfNameInvalidBind
     ;
 
-// idxName[QualifiedName name]
-//     : t=IDENT              { $name.setName($t.text, false); }
-//     | t=QUOTED_NAME        { $name.setName($t.text, true);}
-//     | k=unreserved_keyword { $name.setName(k, false); }
-//     | QMARK {addRecognitionError("Bind variables cannot be used for index names");}
-//     ;
+idxName
+    : t=IDENT
+    | t=QUOTED_NAME
+    | k=unreserved_keyword
+    | QMARK
+    ;
 
 // roleName[RoleName name]
 //     : t=IDENT              { $name.setName($t.text, false); }

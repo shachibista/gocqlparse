@@ -92,6 +92,10 @@ func (v *BaseCql3Visitor) VisitDropTypeStatement(ctx *DropTypeStatementContext) 
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitDropIndexStatement(ctx *DropIndexStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitTruncateStatement(ctx *TruncateStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -144,6 +148,10 @@ func (v *BaseCql3Visitor) VisitKeyspaceName(ctx *KeyspaceNameContext) interface{
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitIndexName(ctx *IndexNameContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitColumnFamilyName(ctx *ColumnFamilyNameContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -173,6 +181,10 @@ func (v *BaseCql3Visitor) VisitCfNameQuotedIdent(ctx *CfNameQuotedIdentContext) 
 }
 
 func (v *BaseCql3Visitor) VisitCfNameInvalidBind(ctx *CfNameInvalidBindContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitIdxName(ctx *IdxNameContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

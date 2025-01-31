@@ -71,6 +71,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#dropTypeStatement.
 	VisitDropTypeStatement(ctx *DropTypeStatementContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#dropIndexStatement.
+	VisitDropIndexStatement(ctx *DropIndexStatementContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#truncateStatement.
 	VisitTruncateStatement(ctx *TruncateStatementContext) interface{}
 
@@ -110,6 +113,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#keyspaceName.
 	VisitKeyspaceName(ctx *KeyspaceNameContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#indexName.
+	VisitIndexName(ctx *IndexNameContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#columnFamilyName.
 	VisitColumnFamilyName(ctx *ColumnFamilyNameContext) interface{}
 
@@ -133,6 +139,9 @@ type Cql3Visitor interface {
 
 	// Visit a parse tree produced by Cql3Parser#CfNameInvalidBind.
 	VisitCfNameInvalidBind(ctx *CfNameInvalidBindContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#idxName.
+	VisitIdxName(ctx *IdxNameContext) interface{}
 
 	// Visit a parse tree produced by Cql3Parser#constant.
 	VisitConstant(ctx *ConstantContext) interface{}

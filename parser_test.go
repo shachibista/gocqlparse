@@ -1437,6 +1437,39 @@ func TestParseStatementDropUser(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropUserStatement() })
 }
 
+func TestParseStatementDropIndex(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "drop index test",
+			expected: &ast.DropIndexStatement{
+				Name: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "drop index ks.test",
+			expected: &ast.DropIndexStatement{
+				Name: &ast.ObjectRef{
+					Keyspace: ast.UnquotedIdentifier("ks"),
+					Name:     ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "drop index if exists test",
+			expected: &ast.DropIndexStatement{
+				IfExists: true,
+				Name: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropIndexStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 
