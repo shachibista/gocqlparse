@@ -139,3 +139,9 @@ type DropTriggerStatement struct {
 	Name     Identifier
 	On       *ObjectRef
 }
+
+type AlterKeyspaceStatement struct {
+	IfExists   bool
+	Keyspace   Identifier
+	Properties []*Property
+}

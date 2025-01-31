@@ -32,7 +32,7 @@ cqlStatement
        | st12=dropTableStatement
        | st13=dropIndexStatement
 //     | st14=alterTableStatement             { $stmt = st14; }
-//     | st15=alterKeyspaceStatement          { $stmt = st15; }
+       | st15=alterKeyspaceStatement
 //     | st16=grantPermissionsStatement       { $stmt = st16; }
 //     | st17=revokePermissionsStatement      { $stmt = st17; }
 //     | st18=listPermissionsStatement        { $stmt = st18; }
@@ -739,17 +739,13 @@ dropTriggerStatement
     : K_DROP K_TRIGGER ifExists? (name=ident) K_ON cf=columnFamilyName
     ;
 
-// /**
-//  * ALTER KEYSPACE [IF EXISTS] <KS> WITH <property> = <value>;
-//  */
-// alterKeyspaceStatement
-//     @init {
-//      KeyspaceAttributes attrs = new KeyspaceAttributes();
-//      boolean ifExists = false;
-//     }
-//     : K_ALTER K_KEYSPACE (K_IF K_EXISTS { ifExists = true; } )? ks=keyspaceName
-//         K_WITH properties[attrs] { $stmt = new AlterKeyspaceStatement.Raw(ks, attrs, ifExists); }
-//     ;
+/**
+ * ALTER KEYSPACE [IF EXISTS] <KS> WITH <property> = <value>;
+ */
+alterKeyspaceStatement
+    : K_ALTER K_KEYSPACE ifExists? ks=keyspaceName
+        K_WITH properties
+    ;
 
 // /**
 //  * ALTER TABLE <table> ALTER <column> TYPE <newtype>;

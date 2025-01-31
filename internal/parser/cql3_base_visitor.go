@@ -88,6 +88,10 @@ func (v *BaseCql3Visitor) VisitDropTriggerStatement(ctx *DropTriggerStatementCon
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitAlterKeyspaceStatement(ctx *AlterKeyspaceStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitDropKeyspaceStatement(ctx *DropKeyspaceStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }

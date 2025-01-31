@@ -24,7 +24,7 @@ go get github.com/shachibista/gocqlparse
 | `DROP TABLE`                    | :white_check_mark: |
 | `DROP INDEX`                    | :white_check_mark: |
 | `ALTER TABLE`                   |                    | Hard
-| `ALTER KEYSPACE`                |                    | Easy
+| `ALTER KEYSPACE`                | :white_check_mark: |
 | `GRANT PERMISSIONS`             |                    | Moderate
 | `REVOKE PERMISSIONS`            |                    | Moderate
 | `LIST PERMISSIONS`              |                    | Moderate

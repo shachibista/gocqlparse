@@ -137,6 +137,17 @@ func (v *Visitor) VisitCreateKeyspaceStatement(ctx *parser.CreateKeyspaceStateme
 	}
 }
 
+func (v *Visitor) VisitAlterKeyspaceStatement(ctx *parser.AlterKeyspaceStatementContext) any {
+	ks := v.Visit(ctx.KeyspaceName()).(Identifier)
+	props := v.Visit(ctx.Properties()).([]*Property)
+
+	return &AlterKeyspaceStatement{
+		IfExists:   ctx.IfExists() != nil,
+		Keyspace:   ks,
+		Properties: props,
+	}
+}
+
 func (v *Visitor) VisitDropTypeStatement(ctx *parser.DropTypeStatementContext) any {
 	name := v.Visit(ctx.UserTypeName()).(*ObjectRef)
 

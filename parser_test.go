@@ -1269,6 +1269,52 @@ func TestParseStatementCreateKeyspace(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.CreateKeyspaceStatement() })
 }
 
+func TestParseStatementAlterKeyspace(t *testing.T) {
+	cases := []testCase{
+		{
+			input: `alter KEYSPACE cycling
+  WITH REPLICATION = { 
+   'class' : 'SimpleStrategy', 
+   'replication_factor' : 1 
+  }`,
+			expected: &ast.AlterKeyspaceStatement{
+				Keyspace: ast.UnquotedIdentifier("cycling"),
+				Properties: []*ast.Property{
+					{
+						Key: ast.UnquotedIdentifier("REPLICATION"),
+						Value: &ast.MapLiteral{
+							"class":              "SimpleStrategy",
+							"replication_factor": 1,
+						},
+					},
+				},
+			},
+		},
+		{
+			input: `alter KEYSPACE if exists cycling
+  WITH REPLICATION = { 
+   'class' : 'SimpleStrategy', 
+   'replication_factor' : 1 
+  }`,
+			expected: &ast.AlterKeyspaceStatement{
+				IfExists: true,
+				Keyspace: ast.UnquotedIdentifier("cycling"),
+				Properties: []*ast.Property{
+					{
+						Key: ast.UnquotedIdentifier("REPLICATION"),
+						Value: &ast.MapLiteral{
+							"class":              "SimpleStrategy",
+							"replication_factor": 1,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.AlterKeyspaceStatement() })
+}
+
 func TestParseStatementDropType(t *testing.T) {
 	cases := []testCase{
 		{
