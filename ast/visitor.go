@@ -381,13 +381,7 @@ func (v *Visitor) VisitTypeColumns(ctx *parser.TypeColumnsContext) any {
 func (v *Visitor) VisitConstant(ctx *parser.ConstantContext) any {
 	switch {
 	case ctx.STRING_LITERAL() != nil:
-		str := ctx.GetText()
-
-		if str[0] == '$' {
-			return str[2 : len(str)-2]
-		} else {
-			return str[1 : len(str)-1]
-		}
+		return unwrapStr(ctx.GetText())
 	case ctx.INTEGER() != nil:
 		str := ctx.GetText()
 
@@ -580,8 +574,13 @@ func visitIdent(ctx antlr.ParserRuleContext) Identifier {
 }
 
 func visitQuotedIdent(ctx antlr.ParserRuleContext) Identifier {
-	qid := ctx.GetText()
-	id := qid[1 : len(qid)-1]
+	return QuotedIdentifier(unwrapStr(ctx.GetText()))
+}
 
-	return QuotedIdentifier(id)
+func unwrapStr(src string) string {
+	if src[0] == '$' {
+		return src[2 : len(src)-2]
+	} else {
+		return src[1 : len(src)-1]
+	}
 }

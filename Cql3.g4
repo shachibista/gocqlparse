@@ -41,7 +41,7 @@ cqlStatement
        | st21=dropUserStatement
        | st22=listUsersStatement
 //     | st23=createTriggerStatement          { $stmt = st23; }
-//     | st24=dropTriggerStatement            { $stmt = st24; }
+       | st24=dropTriggerStatement
        | st25=createTypeStatement
 //     | st26=alterTypeStatement              { $stmt = st26; }
        | st27=dropTypeStatement
@@ -724,26 +724,20 @@ typeColumns
 //     : k=ident (K_ASC | K_DESC { ascending = false; } ) { $stmt.extendClusteringOrder(k, ascending); }
 //     ;
 
-// /**
-//  * CREATE TRIGGER triggerName ON columnFamily USING 'triggerClass';
-//  */
-// createTriggerStatement
-//     @init {
-//         boolean ifNotExists = false;
-//     }
-//     : K_CREATE K_TRIGGER (K_IF K_NOT K_EXISTS { ifNotExists = true; } )? (name=ident)
-//         K_ON cf=columnFamilyName K_USING cls=STRING_LITERAL
-//       { $stmt = new CreateTriggerStatement.Raw(cf, name.toString(), $cls.text, ifNotExists); }
-//     ;
+/**
+ * CREATE TRIGGER triggerName ON columnFamily USING 'triggerClass';
+ */
+createTriggerStatement
+    : K_CREATE K_TRIGGER ifNotExists? (name=ident)
+        K_ON cf=columnFamilyName K_USING cls=STRING_LITERAL
+    ;
 
-// /**
-//  * DROP TRIGGER [IF EXISTS] triggerName ON columnFamily;
-//  */
-// dropTriggerStatement
-//      @init { boolean ifExists = false; }
-//     : K_DROP K_TRIGGER (K_IF K_EXISTS { ifExists = true; } )? (name=ident) K_ON cf=columnFamilyName
-//       { $stmt = new DropTriggerStatement.Raw(cf, name.toString(), ifExists); }
-//     ;
+/**
+ * DROP TRIGGER [IF EXISTS] triggerName ON columnFamily;
+ */
+dropTriggerStatement
+    : K_DROP K_TRIGGER ifExists? (name=ident) K_ON cf=columnFamilyName
+    ;
 
 // /**
 //  * ALTER KEYSPACE [IF EXISTS] <KS> WITH <property> = <value>;

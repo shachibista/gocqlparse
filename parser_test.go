@@ -1569,6 +1569,60 @@ func TestParseStatementDropRole(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropRoleStatement() })
 }
 
+func TestParseStatementCreateTrigger(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "create trigger triggerName on test using 'someClass'",
+			expected: &ast.CreateTriggerStatement{
+				Name: ast.UnquotedIdentifier("triggerName"),
+				On: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+				Using: "someClass",
+			},
+		},
+		{
+			input: "create trigger if not exists triggerName on test using 'someClass'",
+			expected: &ast.CreateTriggerStatement{
+				IfNotExists: true,
+				Name:        ast.UnquotedIdentifier("triggerName"),
+				On: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+				Using: "someClass",
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.CreateTriggerStatement() })
+}
+
+func TestParseStatementDropTrigger(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "drop trigger triggerName on test",
+			expected: &ast.DropTriggerStatement{
+				Name: ast.UnquotedIdentifier("triggerName"),
+				On: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "drop trigger if exists triggerName on test",
+			expected: &ast.DropTriggerStatement{
+				IfExists: true,
+				Name:     ast.UnquotedIdentifier("triggerName"),
+				On: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropTriggerStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

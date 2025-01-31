@@ -126,3 +126,16 @@ type DropRoleStatement struct {
 	IfExists bool
 	Role     Identifier
 }
+
+type CreateTriggerStatement struct {
+	IfNotExists bool
+	Name        Identifier
+	On          *ObjectRef
+	Using       string
+}
+
+type DropTriggerStatement struct {
+	IfExists bool
+	Name     Identifier
+	On       *ObjectRef
+}

@@ -231,3 +231,20 @@ func (v *Visitor) VisitDropRoleStatement(ctx *parser.DropRoleStatementContext) a
 		IfExists: ctx.IfExists() != nil,
 	}
 }
+
+func (v *Visitor) VisitCreateTriggerStatement(ctx *parser.CreateTriggerStatementContext) any {
+	return &CreateTriggerStatement{
+		IfNotExists: ctx.IfNotExists() != nil,
+		Name:        v.Visit(ctx.GetName()).(Identifier),
+		On:          v.Visit(ctx.GetCf()).(*ObjectRef),
+		Using:       unwrapStr(ctx.GetCls().GetText()),
+	}
+}
+
+func (v *Visitor) VisitDropTriggerStatement(ctx *parser.DropTriggerStatementContext) any {
+	return &DropTriggerStatement{
+		IfExists: ctx.IfExists() != nil,
+		Name:     v.Visit(ctx.GetName()).(Identifier),
+		On:       v.Visit(ctx.GetCf()).(*ObjectRef),
+	}
+}
