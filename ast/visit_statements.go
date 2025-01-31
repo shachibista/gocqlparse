@@ -169,3 +169,11 @@ func (v *Visitor) VisitDropIdentityStatement(ctx *parser.DropIdentityStatementCo
 		IfExists: ctx.IfExists() != nil,
 	}
 }
+
+func (v *Visitor) VisitAddIdentityStatement(ctx *parser.AddIdentityStatementContext) any {
+	return &AddIdentityStatement{
+		IfNotExists: ctx.IfNotExists() != nil,
+		Identity:    v.Visit(ctx.GetU()).(Identifier),
+		Role:        v.Visit(ctx.GetR()).(Identifier),
+	}
+}

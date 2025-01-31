@@ -85,3 +85,9 @@ type DropIdentityStatement struct {
 	IfExists bool
 	Identity Identifier
 }
+
+type AddIdentityStatement struct {
+	IfNotExists bool
+	Identity    Identifier
+	Role        Identifier
+}

@@ -74,6 +74,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#truncateStatement.
 	VisitTruncateStatement(ctx *TruncateStatementContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#addIdentityStatement.
+	VisitAddIdentityStatement(ctx *AddIdentityStatementContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#dropIdentityStatement.
 	VisitDropIdentityStatement(ctx *DropIdentityStatementContext) interface{}
 

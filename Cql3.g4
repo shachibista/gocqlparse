@@ -59,7 +59,7 @@ cqlStatement
 //     | st39=dropMaterializedViewStatement   { $stmt = st39; }
 //     | st40=alterMaterializedViewStatement  { $stmt = st40; }
 //     | st41=describeStatement               { $stmt = st41; }
-//     | st42=addIdentityStatement            { $stmt = st42; }
+       | st42=addIdentityStatement
        | st43=dropIdentityStatement
        | st44=listSuperUsersStatement
     ;
@@ -1070,17 +1070,13 @@ truncateStatement
 //     }
 //     : K_DROP K_USER (K_IF K_EXISTS { ifExists = true; })? u=username { name.setName($u.text, true); $stmt = new DropRoleStatement(name, ifExists); }
 //     ;
-// /**
-//  * ADD IDENTITY [IF NOT EXISTS] <identity> TO ROLE <role>
-//  */
-// addIdentityStatement
-//     @init {
-//         String identity = null;
-//         String role = null;
-//         boolean ifNotExists = false;
-//     }
-//     : K_ADD K_IDENTITY (K_IF K_NOT K_EXISTS { ifNotExists = true; })? u=identity { identity= $u.text; } K_TO K_ROLE r=identity { role=$r.text; $stmt = new AddIdentityStatement(identity, role, ifNotExists); }
-//     ;
+
+/**
+ * ADD IDENTITY [IF NOT EXISTS] <identity> TO ROLE <role>
+ */
+addIdentityStatement
+    : K_ADD K_IDENTITY ifNotExists? u=identity K_TO K_ROLE r=identity
+    ;
 
 /**
  * DROP IDENTITY [IF EXISTS] <identity>

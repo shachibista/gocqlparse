@@ -51,6 +51,6 @@ go get github.com/shachibista/gocqlparse
 | `DROP MATERIALIZED VIEW`        |                    | Easy
 | `ALTER MATERIALIZED VIEW`       |                    | Easy
 | `DESCRIBE`                      |                    | Moderate
-| `ADD IDENTITY`                  |                    | Easy
+| `ADD IDENTITY`                  | :white_check_mark: |
 | `DROP IDENTITY`                 | :white_checl_mark: |
 | `LIST SUPER USERS`              | :white_check_mark: |

@@ -1395,6 +1395,28 @@ func TestParseStatementDropIdentity(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropIdentityStatement() })
 }
 
+func TestParseStatementAddIdentity(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "add identity 'user' to role admin",
+			expected: &ast.AddIdentityStatement{
+				Identity: ast.QuotedIdentifier("user"),
+				Role:     ast.UnquotedIdentifier("admin"),
+			},
+		},
+		{
+			input: "add identity if not exists 'user' to role admin",
+			expected: &ast.AddIdentityStatement{
+				IfNotExists: true,
+				Identity:    ast.QuotedIdentifier("user"),
+				Role:        ast.UnquotedIdentifier("admin"),
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.AddIdentityStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 
