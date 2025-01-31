@@ -149,3 +149,12 @@ func (v *Visitor) VisitDropTypeStatement(ctx *parser.DropTypeStatementContext) a
 func (v *Visitor) VisitListUsersStatement(ctx *parser.ListUsersStatementContext) any {
 	return &ListUsersStatement{}
 }
+
+func (v *Visitor) VisitDropKeyspaceStatement(ctx *parser.DropKeyspaceStatementContext) any {
+	ks := v.Visit(ctx.KeyspaceName()).(Identifier)
+
+	return &DropKeyspaceStatement{
+		Name:     ks,
+		IfExists: ctx.IfExists() != nil,
+	}
+}

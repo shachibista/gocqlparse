@@ -72,3 +72,8 @@ type DropTypeStatement struct {
 }
 
 type ListUsersStatement struct{}
+
+type DropKeyspaceStatement struct {
+	IfExists bool
+	Name     Identifier
+}

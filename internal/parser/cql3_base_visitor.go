@@ -80,6 +80,10 @@ func (v *BaseCql3Visitor) VisitTypeColumns(ctx *TypeColumnsContext) interface{} 
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitDropKeyspaceStatement(ctx *DropKeyspaceStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitDropTableStatement(ctx *DropTableStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }

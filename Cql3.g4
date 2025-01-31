@@ -28,7 +28,7 @@ cqlStatement
        | st8= createKeyspaceStatement
        | st9= createTableStatement
 //     | st10=createIndexStatement            { $stmt = st10; }
-//     | st11=dropKeyspaceStatement           { $stmt = st11; }
+       | st11=dropKeyspaceStatement
        | st12=dropTableStatement
 //     | st13=dropIndexStatement              { $stmt = st13; }
 //     | st14=alterTableStatement             { $stmt = st14; }
@@ -836,13 +836,12 @@ typeColumns
 //       )
 //     ;
 
-// /**
-//  * DROP KEYSPACE [IF EXISTS] <KSP>;
-//  */
-// dropKeyspaceStatement returns [DropKeyspaceStatement.Raw stmt]
-//     @init { boolean ifExists = false; }
-//     : K_DROP K_KEYSPACE (K_IF K_EXISTS { ifExists = true; } )? ks=keyspaceName { $stmt = new DropKeyspaceStatement.Raw(ks, ifExists); }
-//     ;
+/**
+ * DROP KEYSPACE [IF EXISTS] <KSP>;
+ */
+dropKeyspaceStatement
+    : K_DROP K_KEYSPACE ifExists? ks=keyspaceName
+    ;
 
 /**
  * DROP TABLE [IF EXISTS] <table>;

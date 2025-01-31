@@ -1313,6 +1313,26 @@ func TestParseStatementListUsers(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.ListUsersStatement() })
 }
 
+func TestParseStatementDropKeyspace(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "drop keyspace test",
+			expected: &ast.DropKeyspaceStatement{
+				Name: ast.UnquotedIdentifier("test"),
+			},
+		},
+		{
+			input: "drop keyspace if exists test",
+			expected: &ast.DropKeyspaceStatement{
+				IfExists: true,
+				Name:     ast.UnquotedIdentifier("test"),
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropKeyspaceStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

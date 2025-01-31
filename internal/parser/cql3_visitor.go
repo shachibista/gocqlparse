@@ -62,6 +62,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#typeColumns.
 	VisitTypeColumns(ctx *TypeColumnsContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#dropKeyspaceStatement.
+	VisitDropKeyspaceStatement(ctx *DropKeyspaceStatementContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#dropTableStatement.
 	VisitDropTableStatement(ctx *DropTableStatementContext) interface{}
 
