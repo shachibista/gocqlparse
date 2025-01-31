@@ -24,6 +24,10 @@ func (v *BaseCql3Visitor) VisitMarker(ctx *MarkerContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitCreateKeyspaceStatement(ctx *CreateKeyspaceStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitCreateTableStatement(ctx *CreateTableStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -221,6 +225,10 @@ func (v *BaseCql3Visitor) VisitTermGroup(ctx *TermGroupContext) interface{} {
 }
 
 func (v *BaseCql3Visitor) VisitSimpleTerm(ctx *SimpleTermContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitProperties(ctx *PropertiesContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

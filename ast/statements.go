@@ -14,7 +14,7 @@ type (
 		Mask               *Function
 	}
 
-	TableProperty struct {
+	Property struct {
 		Key   Identifier
 		Value any
 	}
@@ -36,7 +36,7 @@ type CreateTableStatement struct {
 	Columns         []*TableColumn
 	PartitionKeys   []Identifier
 	ClusteringKeys  []Identifier
-	Properties      []*TableProperty
+	Properties      []*Property
 	CompactStorage  bool
 	ClusteringOrder []*ColumnOrder
 }
@@ -58,4 +58,10 @@ type DropTableStatement struct {
 
 type TruncateStatement struct {
 	ColumnFamily *ObjectRef
+}
+
+type CreateKeyspaceStatement struct {
+	IfNotExists bool
+	Name        Identifier
+	Properties  []*Property
 }

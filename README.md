@@ -17,7 +17,7 @@ go get github.com/shachibista/gocqlparse
 | `DELETE`                        |                    |
 | `USE`                           | :white_check_mark: |
 | `TRUNCATE`                      | :white_check_mark: |
-| `CREATE KEYSPACE`               |                    |
+| `CREATE KEYSPACE`               | :white_check_mark: |
 | `CREATE TABLE`                  | :white_check_mark: |
 | `CREATE INDEX`                  |                    |
 | `DROP KEYSPACE`                 |                    |

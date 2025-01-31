@@ -1,6 +1,8 @@
 package ast
 
-import "github.com/shachibista/gocqlparse/internal/parser"
+import (
+	"github.com/shachibista/gocqlparse/internal/parser"
+)
 
 func (v *Visitor) VisitCreateTableStatement(ctx *parser.CreateTableStatementContext) any {
 	cts := &CreateTableStatement{}
@@ -41,7 +43,7 @@ func (v *Visitor) VisitCreateTableStatement(ctx *parser.CreateTableStatementCont
 				}
 			} else {
 				// generic properties
-				p := v.Visit(tp.Property()).(*TableProperty)
+				p := v.Visit(tp.Property()).(*Property)
 
 				cts.Properties = append(cts.Properties, p)
 			}
@@ -121,5 +123,16 @@ func (v *Visitor) VisitTruncateStatement(ctx *parser.TruncateStatementContext) a
 
 	return &TruncateStatement{
 		ColumnFamily: cf,
+	}
+}
+
+func (v *Visitor) VisitCreateKeyspaceStatement(ctx *parser.CreateKeyspaceStatementContext) any {
+	ks := v.Visit(ctx.KeyspaceName()).(Identifier)
+	props := v.Visit(ctx.Properties()).([]*Property)
+
+	return &CreateKeyspaceStatement{
+		IfNotExists: ctx.IfNotExists() != nil,
+		Name:        ks,
+		Properties:  props,
 	}
 }

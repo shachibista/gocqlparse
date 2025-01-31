@@ -20,6 +20,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#marker.
 	VisitMarker(ctx *MarkerContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#createKeyspaceStatement.
+	VisitCreateKeyspaceStatement(ctx *CreateKeyspaceStatementContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#createTableStatement.
 	VisitCreateTableStatement(ctx *CreateTableStatementContext) interface{}
 
@@ -169,6 +172,9 @@ type Cql3Visitor interface {
 
 	// Visit a parse tree produced by Cql3Parser#simpleTerm.
 	VisitSimpleTerm(ctx *SimpleTermContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#properties.
+	VisitProperties(ctx *PropertiesContext) interface{}
 
 	// Visit a parse tree produced by Cql3Parser#property.
 	VisitProperty(ctx *PropertyContext) interface{}

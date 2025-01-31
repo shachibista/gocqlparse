@@ -320,7 +320,7 @@ func (v *Visitor) VisitProperty(ctx *parser.PropertyContext) any {
 		value = v.Visit(ctx.GetMap_())
 	}
 
-	return &TableProperty{
+	return &Property{
 		Key:   k,
 		Value: value,
 	}
@@ -479,6 +479,16 @@ func (v *Visitor) VisitColumnMaskArguments(ctx *parser.ColumnMaskArgumentsContex
 	}
 
 	return terms
+}
+
+func (v *Visitor) VisitProperties(ctx *parser.PropertiesContext) any {
+	var properties []*Property
+
+	for _, p := range ctx.AllProperty() {
+		properties = append(properties, v.Visit(p).(*Property))
+	}
+
+	return properties
 }
 
 func visitIdent(ctx antlr.ParserRuleContext) Identifier {

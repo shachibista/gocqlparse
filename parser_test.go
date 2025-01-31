@@ -872,7 +872,7 @@ func TestParseStatementCreateTable(t *testing.T) {
 						Type: &ast.NativeType{"int"},
 					},
 				},
-				Properties: []*ast.TableProperty{
+				Properties: []*ast.Property{
 					{
 						Key: ast.UnquotedIdentifier("replication"),
 						Value: &ast.MapLiteral{
@@ -1221,6 +1221,52 @@ func TestParseStatementTruncate(t *testing.T) {
 	}
 
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.TruncateStatement() })
+}
+
+func TestParseStatementCreateKeyspace(t *testing.T) {
+	cases := []testCase{
+		{
+			input: `CREATE KEYSPACE cycling
+  WITH REPLICATION = { 
+   'class' : 'SimpleStrategy', 
+   'replication_factor' : 1 
+  }`,
+			expected: &ast.CreateKeyspaceStatement{
+				Name: ast.UnquotedIdentifier("cycling"),
+				Properties: []*ast.Property{
+					{
+						Key: ast.UnquotedIdentifier("REPLICATION"),
+						Value: &ast.MapLiteral{
+							"class":              "SimpleStrategy",
+							"replication_factor": 1,
+						},
+					},
+				},
+			},
+		},
+		{
+			input: `CREATE KEYSPACE if not exists cycling
+  WITH REPLICATION = { 
+   'class' : 'SimpleStrategy', 
+   'replication_factor' : 1 
+  }`,
+			expected: &ast.CreateKeyspaceStatement{
+				IfNotExists: true,
+				Name:        ast.UnquotedIdentifier("cycling"),
+				Properties: []*ast.Property{
+					{
+						Key: ast.UnquotedIdentifier("REPLICATION"),
+						Value: &ast.MapLiteral{
+							"class":              "SimpleStrategy",
+							"replication_factor": 1,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.CreateKeyspaceStatement() })
 }
 
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {

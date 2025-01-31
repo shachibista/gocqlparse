@@ -25,7 +25,7 @@ cqlStatement
 //     | st5= deleteStatement                 { $stmt = st5; }
        : st6= useStatement
        | st7= truncateStatement
-//     | st8= createKeyspaceStatement         { $stmt = st8; }
+       | st8= createKeyspaceStatement
        | st9= createTableStatement
 //     | st10=createIndexStatement            { $stmt = st10; }
 //     | st11=dropKeyspaceStatement           { $stmt = st11; }
@@ -573,17 +573,13 @@ marker
 //       { $stmt = new DropFunctionStatement.Raw(fn, argTypes, argsSpecified, ifExists); }
 //     ;
 
-// /**
-//  * CREATE KEYSPACE [IF NOT EXISTS] <KEYSPACE> WITH attr1 = value1 AND attr2 = value2;
-//  */
-// createKeyspaceStatement returns [CreateKeyspaceStatement.Raw stmt]
-//     @init {
-//         KeyspaceAttributes attrs = new KeyspaceAttributes();
-//         boolean ifNotExists = false;
-//     }
-//     : K_CREATE K_KEYSPACE (K_IF K_NOT K_EXISTS { ifNotExists = true; } )? ks=keyspaceName
-//       K_WITH properties[attrs] { $stmt = new CreateKeyspaceStatement.Raw(ks, attrs, ifNotExists); }
-//     ;
+/**
+ * CREATE KEYSPACE [IF NOT EXISTS] <KEYSPACE> WITH attr1 = value1 AND attr2 = value2;
+ */
+createKeyspaceStatement
+    : K_CREATE K_KEYSPACE ifNotExists? ks=keyspaceName
+      K_WITH properties
+    ;
 
 // /**
 //  * CREATE TABLE [IF NOT EXISTS] <CF> (
@@ -1578,9 +1574,9 @@ simpleTerm
 //         )
 //     ;
 
-// properties[PropertyDefinitions props]
-//     : property[props] (K_AND property[props])*
-//     ;
+properties
+    : property (K_AND property)*
+    ;
 
 property
     : k=noncol_ident '=' simple=propertyValue
