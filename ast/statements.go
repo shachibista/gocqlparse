@@ -1,19 +1,5 @@
 package ast
 
-import (
-	"fmt"
-	"strings"
-)
-
-type (
-	QuotedIdentifier   string
-	UnquotedIdentifier string
-)
-
-type Identifier interface {
-	fmt.Stringer
-}
-
 type (
 	TypeField struct {
 		Name Identifier
@@ -63,12 +49,4 @@ type CreateTypeStatement struct {
 	IfNotExists bool
 	Name        *ObjectRef
 	Fields      []*TypeField
-}
-
-func (qi QuotedIdentifier) String() string {
-	return string(qi)
-}
-
-func (ui UnquotedIdentifier) String() string {
-	return strings.ToLower(string(ui))
 }
