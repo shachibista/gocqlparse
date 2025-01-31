@@ -44,7 +44,7 @@ go get github.com/shachibista/gocqlparse
 | `CREATE ROLE`                   |                    | Moderate
 | `ALTER ROLE`                    |                    | Moderate
 | `DROP ROLE`                     |                    | Easy
-| `LIST ROLES`                    |                    | Easy
+| `LIST ROLES`                    | :white_check_mark: |
 | `GRANT ROLE`                    | :white_check_mark: |
 | `REVOKE ROLE`                   | :white_check_mark: |
 | `CREATE MATERIALIZED VIEW`      |                    | Hard

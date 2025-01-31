@@ -98,6 +98,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#listUsersStatement.
 	VisitListUsersStatement(ctx *ListUsersStatementContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#listRolesStatement.
+	VisitListRolesStatement(ctx *ListRolesStatementContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#listSuperUsersStatement.
 	VisitListSuperUsersStatement(ctx *ListSuperUsersStatementContext) interface{}
 

@@ -212,3 +212,15 @@ func (v *Visitor) VisitRevokeRoleStatement(ctx *parser.RevokeRoleStatementContex
 		Revokee: v.Visit(ctx.GetRevokee()).(Identifier),
 	}
 }
+
+func (v *Visitor) VisitListRolesStatement(ctx *parser.ListRolesStatementContext) any {
+	var role Identifier
+	if ctx.RoleName() != nil {
+		role = v.Visit(ctx.RoleName()).(Identifier)
+	}
+
+	return &ListRolesStatement{
+		Role:      role,
+		Recursive: ctx.K_NORECURSIVE() == nil,
+	}
+}

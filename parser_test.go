@@ -1522,6 +1522,33 @@ func TestParseStatementRevokeRole(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.RevokeRoleStatement() })
 }
 
+func TestParseStatementListRoles(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "list roles",
+			expected: &ast.ListRolesStatement{
+				Recursive: true,
+			},
+		},
+		{
+			input: "list roles of test",
+			expected: &ast.ListRolesStatement{
+				Role:      ast.UnquotedIdentifier("test"),
+				Recursive: true,
+			},
+		},
+		{
+			input: "list roles of test norecursive",
+			expected: &ast.ListRolesStatement{
+				Role:      ast.UnquotedIdentifier("test"),
+				Recursive: false,
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.ListRolesStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

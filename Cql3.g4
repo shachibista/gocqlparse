@@ -52,7 +52,7 @@ cqlStatement
 //     | st32=createRoleStatement             { $stmt = st32; }
 //     | st33=alterRoleStatement              { $stmt = st33; }
 //     | st34=dropRoleStatement               { $stmt = st34; }
-//     | st35=listRolesStatement              { $stmt = st35; }
+       | st35=listRolesStatement
        | st36=grantRoleStatement
        | st37=revokeRoleStatement
 //     | st38=createMaterializedViewStatement { $stmt = st38; }
@@ -1180,19 +1180,14 @@ listUsersStatement
 //       { $stmt = new DropRoleStatement(name, ifExists); }
 //     ;
 
-// /**
-//  * LIST ROLES [OF <rolename>] [NORECURSIVE]
-//  */
-// listRolesStatement
-//     @init {
-//         boolean recursive = true;
-//         RoleName grantee = new RoleName();
-//     }
-//     : K_LIST K_ROLES
-//       ( K_OF roleName[grantee])?
-//       ( K_NORECURSIVE { recursive = false; } )?
-//       { $stmt = new ListRolesStatement(grantee, recursive); }
-//     ;
+/**
+ * LIST ROLES [OF <rolename>] [NORECURSIVE]
+ */
+listRolesStatement
+   : K_LIST K_ROLES
+      ( K_OF roleName )?
+      ( K_NORECURSIVE )?
+    ;
 
 /**
  * LIST SUPERUSERS

@@ -116,3 +116,8 @@ type RevokeRoleStatement struct {
 	Role    Identifier
 	Revokee Identifier
 }
+
+type ListRolesStatement struct {
+	Role      Identifier
+	Recursive bool
+}
