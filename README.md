@@ -21,7 +21,7 @@ go get github.com/shachibista/gocqlparse
 | `CREATE TABLE`                  | :white_check_mark: |
 | `CREATE INDEX`                  |                    |
 | `DROP KEYSPACE`                 |                    |
-| `DROP TABLE`                    |                    |
+| `DROP TABLE`                    | :white_check_mark: |
 | `DROP INDEX`                    |                    |
 | `ALTER TABLE`                   |                    |
 | `ALTER KEYSPACE`                |                    |

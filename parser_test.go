@@ -1181,6 +1181,32 @@ func TestParseTableClusteringOrder(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.TableClusteringOrder() })
 }
 
+func TestParseStatementDropTable(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "drop table ks.test",
+			expected: &ast.DropTableStatement{
+				ColumnFamily: &ast.ObjectRef{
+					Keyspace: ast.UnquotedIdentifier("ks"),
+					Name:     ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "drop table if exists ks.test",
+			expected: &ast.DropTableStatement{
+				IfExists: true,
+				ColumnFamily: &ast.ObjectRef{
+					Keyspace: ast.UnquotedIdentifier("ks"),
+					Name:     ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropTableStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

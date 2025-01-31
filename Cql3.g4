@@ -29,7 +29,7 @@ cqlStatement
         | st9= createTableStatement
 //     | st10=createIndexStatement            { $stmt = st10; }
 //     | st11=dropKeyspaceStatement           { $stmt = st11; }
-//     | st12=dropTableStatement              { $stmt = st12; }
+       | st12=dropTableStatement
 //     | st13=dropIndexStatement              { $stmt = st13; }
 //     | st14=alterTableStatement             { $stmt = st14; }
 //     | st15=alterKeyspaceStatement          { $stmt = st15; }
@@ -602,6 +602,10 @@ ifNotExists
     : K_IF K_NOT K_EXISTS
     ;
 
+ifExists
+    : K_IF K_EXISTS
+    ;
+
 tableDefinition
     : '(' tableColumns ( ',' tableColumns? )* ')'
       ( K_WITH tableProperty ( K_AND tableProperty )*)?
@@ -844,13 +848,12 @@ typeColumns
 //     : K_DROP K_KEYSPACE (K_IF K_EXISTS { ifExists = true; } )? ks=keyspaceName { $stmt = new DropKeyspaceStatement.Raw(ks, ifExists); }
 //     ;
 
-// /**
-//  * DROP TABLE [IF EXISTS] <table>;
-//  */
-// dropTableStatement returns [DropTableStatement.Raw stmt]
-//     @init { boolean ifExists = false; }
-//     : K_DROP K_COLUMNFAMILY (K_IF K_EXISTS { ifExists = true; } )? name=columnFamilyName { $stmt = new DropTableStatement.Raw(name, ifExists); }
-//     ;
+/**
+ * DROP TABLE [IF EXISTS] <table>;
+ */
+dropTableStatement
+    : K_DROP K_COLUMNFAMILY ifExists? name=columnFamilyName
+    ;
 
 // /**
 //  * DROP TYPE <name>;

@@ -50,3 +50,8 @@ type CreateTypeStatement struct {
 	Name        *ObjectRef
 	Fields      []*TypeField
 }
+
+type DropTableStatement struct {
+	IfExists     bool
+	ColumnFamily *ObjectRef
+}

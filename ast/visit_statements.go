@@ -106,3 +106,12 @@ func (v *Visitor) VisitUseStatement(ctx *parser.UseStatementContext) any {
 		Keyspace: ks,
 	}
 }
+
+func (v *Visitor) VisitDropTableStatement(ctx *parser.DropTableStatementContext) any {
+	cf := v.Visit(ctx.ColumnFamilyName()).(*ObjectRef)
+
+	return &DropTableStatement{
+		ColumnFamily: cf,
+		IfExists:     ctx.IfExists() != nil,
+	}
+}

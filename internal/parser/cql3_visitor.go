@@ -26,6 +26,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#ifNotExists.
 	VisitIfNotExists(ctx *IfNotExistsContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#ifExists.
+	VisitIfExists(ctx *IfExistsContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#tableDefinition.
 	VisitTableDefinition(ctx *TableDefinitionContext) interface{}
 
@@ -55,6 +58,9 @@ type Cql3Visitor interface {
 
 	// Visit a parse tree produced by Cql3Parser#typeColumns.
 	VisitTypeColumns(ctx *TypeColumnsContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#dropTableStatement.
+	VisitDropTableStatement(ctx *DropTableStatementContext) interface{}
 
 	// Visit a parse tree produced by Cql3Parser#IdentIdent.
 	VisitIdentIdent(ctx *IdentIdentContext) interface{}

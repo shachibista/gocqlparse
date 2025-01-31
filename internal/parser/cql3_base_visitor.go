@@ -32,6 +32,10 @@ func (v *BaseCql3Visitor) VisitIfNotExists(ctx *IfNotExistsContext) interface{} 
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitIfExists(ctx *IfExistsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitTableDefinition(ctx *TableDefinitionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -69,6 +73,10 @@ func (v *BaseCql3Visitor) VisitCreateTypeStatement(ctx *CreateTypeStatementConte
 }
 
 func (v *BaseCql3Visitor) VisitTypeColumns(ctx *TypeColumnsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitDropTableStatement(ctx *DropTableStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
