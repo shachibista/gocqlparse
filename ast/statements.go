@@ -70,3 +70,5 @@ type DropTypeStatement struct {
 	IfExists bool
 	Name     *ObjectRef
 }
+
+type ListUsersStatement struct{}

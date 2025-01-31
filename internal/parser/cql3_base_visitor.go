@@ -92,6 +92,10 @@ func (v *BaseCql3Visitor) VisitTruncateStatement(ctx *TruncateStatementContext) 
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitListUsersStatement(ctx *ListUsersStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitIdentIdent(ctx *IdentIdentContext) interface{} {
 	return v.VisitChildren(ctx)
 }

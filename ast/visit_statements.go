@@ -145,3 +145,7 @@ func (v *Visitor) VisitDropTypeStatement(ctx *parser.DropTypeStatementContext) a
 		IfExists: ctx.IfExists() != nil,
 	}
 }
+
+func (v *Visitor) VisitListUsersStatement(ctx *parser.ListUsersStatementContext) any {
+	return &ListUsersStatement{}
+}

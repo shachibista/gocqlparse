@@ -39,7 +39,7 @@ cqlStatement
 //     | st19=createUserStatement             { $stmt = st19; }
 //     | st20=alterUserStatement              { $stmt = st20; }
 //     | st21=dropUserStatement               { $stmt = st21; }
-//     | st22=listUsersStatement              { $stmt = st22; }
+       | st22=listUsersStatement
 //     | st23=createTriggerStatement          { $stmt = st23; }
 //     | st24=dropTriggerStatement            { $stmt = st24; }
        | st25=createTypeStatement
@@ -1094,12 +1094,12 @@ truncateStatement
 //       : K_DROP K_IDENTITY (K_IF K_EXISTS { ifExists = true; })? u=identity { identity= $u.text; $stmt = new DropIdentityStatement(identity, ifExists);}
 //       ;
 
-// /**
-//  * LIST USERS
-//  */
-// listUsersStatement returns [ListRolesStatement stmt]
-//     : K_LIST K_USERS { $stmt = new ListUsersStatement(); }
-//     ;
+/**
+ * LIST USERS
+ */
+listUsersStatement
+    : K_LIST K_USERS
+    ;
 
 // /**
 //  * CREATE ROLE [IF NOT EXISTS] <rolename> [ [WITH] option [ [AND] option ]* ]

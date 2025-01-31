@@ -31,7 +31,7 @@ go get github.com/shachibista/gocqlparse
 | `CREATE USER`                   |                    | Easy
 | `ALTER USER`                    |                    | Easy
 | `DROP USER`                     |                    | Easy
-| `LIST USERS`                    |                    | Trivial
+| `LIST USERS`                    | :white_check_mark: |
 | `CREATE TRIGGER`                |                    | Easy
 | `DROP TRIGGER`                  |                    | Easy
 | `CREATE TYPE`                   | :white_check_mark: |

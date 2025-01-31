@@ -1302,6 +1302,17 @@ func TestParseStatementDropType(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropTypeStatement() })
 }
 
+func TestParseStatementListUsers(t *testing.T) {
+	cases := []testCase{
+		{
+			input:    "list users",
+			expected: &ast.ListUsersStatement{},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.ListUsersStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 
