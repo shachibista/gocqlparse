@@ -1344,6 +1344,57 @@ func TestParseStatementDropKeyspace(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropKeyspaceStatement() })
 }
 
+func TestParseIdentity(t *testing.T) {
+	types := []testCase{
+		{
+			input:    "hello",
+			expected: ast.UnquotedIdentifier("hello"),
+			hasError: false,
+		},
+		{
+			input:    "'hello'",
+			expected: ast.QuotedIdentifier("hello"),
+			hasError: false,
+		},
+		{
+			input:    `"hello"`,
+			hasError: true,
+		},
+	}
+
+	for _, tc := range types {
+		p := NewParser(tc.input)
+		st, err := parseRule[ast.Identifier](func() antlr.ParseTree { return p.Identity() })
+
+		if tc.hasError {
+			require.NotNil(t, err, "expected error for non-type ident %s", tc.input)
+		} else {
+			require.Nil(t, err)
+			assert.Equal(t, tc.expected, st)
+		}
+	}
+}
+
+func TestParseStatementDropIdentity(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "drop identity test",
+			expected: &ast.DropIdentityStatement{
+				Identity: ast.UnquotedIdentifier("test"),
+			},
+		},
+		{
+			input: "drop identity if exists test",
+			expected: &ast.DropIdentityStatement{
+				IfExists: true,
+				Identity: ast.UnquotedIdentifier("test"),
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropIdentityStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

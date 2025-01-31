@@ -162,3 +162,10 @@ func (v *Visitor) VisitDropKeyspaceStatement(ctx *parser.DropKeyspaceStatementCo
 		IfExists: ctx.IfExists() != nil,
 	}
 }
+
+func (v *Visitor) VisitDropIdentityStatement(ctx *parser.DropIdentityStatementContext) any {
+	return &DropIdentityStatement{
+		Identity: v.Visit(ctx.Identity()).(Identifier),
+		IfExists: ctx.IfExists() != nil,
+	}
+}

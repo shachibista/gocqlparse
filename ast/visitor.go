@@ -491,6 +491,19 @@ func (v *Visitor) VisitProperties(ctx *parser.PropertiesContext) any {
 	return properties
 }
 
+func (v *Visitor) VisitIdentity(ctx *parser.IdentityContext) any {
+	if ctx.IDENT() != nil {
+		return visitIdent(ctx)
+	}
+
+	if ctx.STRING_LITERAL() != nil {
+		return visitQuotedIdent(ctx)
+	}
+
+	v.Err(ctx, "quoted strings are not supported for identity")
+	return nil
+}
+
 func visitIdent(ctx antlr.ParserRuleContext) Identifier {
 	id := ctx.GetText()
 

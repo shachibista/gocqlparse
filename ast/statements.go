@@ -80,3 +80,8 @@ type DropKeyspaceStatement struct {
 	IfExists bool
 	Name     Identifier
 }
+
+type DropIdentityStatement struct {
+	IfExists bool
+	Identity Identifier
+}

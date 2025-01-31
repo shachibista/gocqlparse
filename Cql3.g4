@@ -60,7 +60,7 @@ cqlStatement
 //     | st40=alterMaterializedViewStatement  { $stmt = st40; }
 //     | st41=describeStatement               { $stmt = st41; }
 //     | st42=addIdentityStatement            { $stmt = st42; }
-//     | st43=dropIdentityStatement           { $stmt = st43; }
+       | st43=dropIdentityStatement
        | st44=listSuperUsersStatement
     ;
 
@@ -1082,16 +1082,12 @@ truncateStatement
 //     : K_ADD K_IDENTITY (K_IF K_NOT K_EXISTS { ifNotExists = true; })? u=identity { identity= $u.text; } K_TO K_ROLE r=identity { role=$r.text; $stmt = new AddIdentityStatement(identity, role, ifNotExists); }
 //     ;
 
-// /**
-//  * DROP IDENTITY [IF EXISTS] <identity>
-//  */
-//  dropIdentityStatement
-//       @init {
-//           boolean ifExists = false;
-//           String identity = null;
-//       }
-//       : K_DROP K_IDENTITY (K_IF K_EXISTS { ifExists = true; })? u=identity { identity= $u.text; $stmt = new DropIdentityStatement(identity, ifExists);}
-//       ;
+/**
+ * DROP IDENTITY [IF EXISTS] <identity>
+ */
+ dropIdentityStatement
+      : K_DROP K_IDENTITY ifExists? u=identity
+      ;
 
 /**
  * LIST USERS
@@ -1732,11 +1728,11 @@ vector_type
 //     | QUOTED_NAME { addRecognitionError("Quoted strings are are not supported for user names and USER is deprecated, please use ROLE");}
 //     ;
 
-// identity
-//     : IDENT
-//     | STRING_LITERAL
-//     | QUOTED_NAME { addRecognitionError("Quoted strings are are not supported for identity");}
-//     ;
+identity
+    : IDENT
+    | STRING_LITERAL
+    | QUOTED_NAME
+    ;
 
 // mbean
 //     : STRING_LITERAL
