@@ -1747,6 +1747,56 @@ func TestParseStatementCreateUser(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.CreateUserStatement() })
 }
 
+func TestParseStatementAlterUser(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "alter user test",
+			expected: &ast.AlterUserStatement{
+				Username: ast.UnquotedIdentifier("test"),
+			},
+		},
+		{
+			input: "alter user test with password 'hello'",
+			expected: &ast.AlterUserStatement{
+				Username: ast.UnquotedIdentifier("test"),
+				Password: ast.PlainPassword("hello"),
+			},
+		},
+		{
+			input: "alter user if exists test with password 'hello'",
+			expected: &ast.AlterUserStatement{
+				IfExists: true,
+				Username: ast.UnquotedIdentifier("test"),
+				Password: ast.PlainPassword("hello"),
+			},
+		},
+		{
+			input: "alter user test with hashed password '23de3'",
+			expected: &ast.AlterUserStatement{
+				Username: ast.UnquotedIdentifier("test"),
+				Password: ast.HashedPassword("23de3"),
+			},
+		},
+		{
+			input: "alter user test with generated password",
+			expected: &ast.AlterUserStatement{
+				Username: ast.UnquotedIdentifier("test"),
+				Password: ast.GeneratedPassword,
+			},
+		},
+		{
+			input: "alter user test with generated password superuser",
+			expected: &ast.AlterUserStatement{
+				Superuser: true,
+				Username:  ast.UnquotedIdentifier("test"),
+				Password:  ast.GeneratedPassword,
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.AlterUserStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

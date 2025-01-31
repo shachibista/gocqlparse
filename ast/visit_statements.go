@@ -281,3 +281,17 @@ func (v *Visitor) VisitCreateUserStatement(ctx *parser.CreateUserStatementContex
 		Superuser:   ctx.K_SUPERUSER() != nil,
 	}
 }
+
+func (v *Visitor) VisitAlterUserStatement(ctx *parser.AlterUserStatementContext) any {
+	var password Password
+	if ctx.K_WITH() != nil {
+		password = v.Visit(ctx.UserPassword())
+	}
+
+	return &AlterUserStatement{
+		IfExists:  ctx.IfExists() != nil,
+		Username:  v.Visit(ctx.Username()).(Identifier),
+		Password:  password,
+		Superuser: ctx.K_SUPERUSER() != nil,
+	}
+}

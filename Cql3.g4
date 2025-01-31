@@ -37,7 +37,7 @@ cqlStatement
 //     | st17=revokePermissionsStatement      { $stmt = st17; }
 //     | st18=listPermissionsStatement        { $stmt = st18; }
        | st19=createUserStatement
-//     | st20=alterUserStatement              { $stmt = st20; }
+       | st20=alterUserStatement
        | st21=dropUserStatement
        | st22=listUsersStatement
 //     | st23=createTriggerStatement          { $stmt = st23; }
@@ -986,35 +986,14 @@ createUserStatement
       ( K_SUPERUSER | K_NOSUPERUSER )?
     ;
 
-// /**
-//  * ALTER USER [IF EXISTS] <username> [WITH PASSWORD <password>] [SUPERUSER|NOSUPERUSER]
-//  */
-// alterUserStatement
-//     @init {
-//         RoleOptions opts = new RoleOptions();
-//         RoleName name = new RoleName();
-//         boolean ifExists = false;
-//     }
-//     : K_ALTER K_USER (K_IF K_EXISTS { ifExists = true; })? u=username { name.setName($u.text, true); }
-//       ( K_WITH userPassword[opts] )?
-//       ( K_SUPERUSER { opts.setOption(IRoleManager.Option.SUPERUSER, true); }
-//         | K_NOSUPERUSER { opts.setOption(IRoleManager.Option.SUPERUSER, false); } ) ?
-//       {
-//          if (opts.getPassword().isPresent() && opts.getHashedPassword().isPresent())
-//          {
-//             throw new SyntaxException("Options 'password' and 'hashed password' are mutually exclusive");
-//          }
-//          if (opts.getPassword().isPresent() && opts.isGeneratedPassword())
-//          {
-//             throw new SyntaxException("Options 'password' and 'generated password' are mutually exclusive");
-//          }
-//          if (opts.getHashedPassword().isPresent() && opts.isGeneratedPassword())
-//          {
-//             throw new SyntaxException("Options 'hashed password' and 'generated password' are mutually exclusive");
-//          }
-//          $stmt = new AlterRoleStatement(name, opts, null, null, ifExists);
-//       }
-//     ;
+/**
+ * ALTER USER [IF EXISTS] <username> [WITH PASSWORD <password>] [SUPERUSER|NOSUPERUSER]
+ */
+alterUserStatement
+    : K_ALTER K_USER ifExists? u=username
+      ( K_WITH userPassword )?
+      ( K_SUPERUSER | K_NOSUPERUSER ) ?
+   ;
 
 /**
  * DROP USER [IF EXISTS] <username>

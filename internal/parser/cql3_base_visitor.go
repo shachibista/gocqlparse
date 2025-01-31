@@ -132,6 +132,10 @@ func (v *BaseCql3Visitor) VisitCreateUserStatement(ctx *CreateUserStatementConte
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitAlterUserStatement(ctx *AlterUserStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitDropUserStatement(ctx *DropUserStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }

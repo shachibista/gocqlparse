@@ -158,3 +158,10 @@ type CreateUserStatement struct {
 	Password    Password
 	Superuser   bool
 }
+
+type AlterUserStatement struct {
+	IfExists  bool
+	Username  Identifier
+	Password  Password
+	Superuser bool
+}
