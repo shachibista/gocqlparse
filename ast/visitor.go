@@ -548,6 +548,31 @@ func (v *Visitor) VisitIdxName(ctx *parser.IdxNameContext) any {
 	return nil
 }
 
+func (v *Visitor) VisitRoleName(ctx *parser.RoleNameContext) any {
+	if ctx.IDENT() != nil {
+		return visitIdent(ctx)
+	}
+
+	if ctx.STRING_LITERAL() != nil {
+		return visitQuotedIdent(ctx)
+	}
+
+	if ctx.QUOTED_NAME() != nil {
+		return visitQuotedIdent(ctx)
+	}
+
+	if ctx.Unreserved_keyword() != nil {
+		return visitIdent(ctx)
+	}
+
+	v.Err(ctx, "bind variables cannot be used for role names")
+	return nil
+}
+
+func (v *Visitor) VisitUserOrRoleName(ctx *parser.UserOrRoleNameContext) any {
+	return v.Visit(ctx.RoleName())
+}
+
 func visitIdent(ctx antlr.ParserRuleContext) Identifier {
 	id := ctx.GetText()
 

@@ -106,3 +106,8 @@ type DropMaterializedViewStatement struct {
 	IfExists bool
 	Name     *ObjectRef
 }
+
+type GrantRoleStatement struct {
+	Role    Identifier
+	Grantee Identifier
+}

@@ -104,6 +104,10 @@ func (v *BaseCql3Visitor) VisitTruncateStatement(ctx *TruncateStatementContext) 
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitGrantRoleStatement(ctx *GrantRoleStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitDropUserStatement(ctx *DropUserStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -164,6 +168,10 @@ func (v *BaseCql3Visitor) VisitUserTypeName(ctx *UserTypeNameContext) interface{
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitUserOrRoleName(ctx *UserOrRoleNameContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitKsNameIdent(ctx *KsNameIdentContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -189,6 +197,10 @@ func (v *BaseCql3Visitor) VisitCfNameInvalidBind(ctx *CfNameInvalidBindContext) 
 }
 
 func (v *BaseCql3Visitor) VisitIdxName(ctx *IdxNameContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitRoleName(ctx *RoleNameContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

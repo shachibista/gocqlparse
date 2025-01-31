@@ -53,7 +53,7 @@ cqlStatement
 //     | st33=alterRoleStatement              { $stmt = st33; }
 //     | st34=dropRoleStatement               { $stmt = st34; }
 //     | st35=listRolesStatement              { $stmt = st35; }
-//     | st36=grantRoleStatement              { $stmt = st36; }
+       | st36=grantRoleStatement
 //     | st37=revokeRoleStatement             { $stmt = st37; }
 //     | st38=createMaterializedViewStatement { $stmt = st38; }
        | st39=dropMaterializedViewStatement
@@ -904,16 +904,15 @@ truncateStatement
 //       { $stmt = new RevokePermissionsStatement(filterPermissions($permissionOrAll.perms, $resource.res), $resource.res, revokee); }
 //     ;
 
-// /**
-//  * GRANT ROLE <rolename> TO <grantee>
-//  */
-// grantRoleStatement
-//     : K_GRANT
-//           role=userOrRoleName
-//       K_TO
-//           grantee=userOrRoleName
-//       { $stmt = new GrantRoleStatement(role, grantee); }
-//     ;
+/**
+ * GRANT ROLE <rolename> TO <grantee>
+ */
+grantRoleStatement
+    : K_GRANT
+          role=userOrRoleName
+      K_TO
+          grantee=userOrRoleName
+    ;
 
 // /**
 //  * REVOKE ROLE <rolename> FROM <revokee>
@@ -1323,10 +1322,9 @@ userTypeName
     : (ks=noncol_ident '.')? ut=non_type_ident
     ;
 
-// userOrRoleName
-//     @init { RoleName role = new RoleName(); }
-//     : roleName[role] {$name = role;}
-//     ;
+userOrRoleName
+    : roleName
+    ;
 
 ksName
     : t=IDENT                   # KsNameIdent
@@ -1349,13 +1347,13 @@ idxName
     | QMARK
     ;
 
-// roleName[RoleName name]
-//     : t=IDENT              { $name.setName($t.text, false); }
-//     | s=STRING_LITERAL     { $name.setName($s.text, true); }
-//     | t=QUOTED_NAME        { $name.setName($t.text, true); }
-//     | k=unreserved_keyword { $name.setName(k, false); }
-//     | QMARK {addRecognitionError("Bind variables cannot be used for role names");}
-//     ;
+roleName
+    : t=IDENT
+    | s=STRING_LITERAL
+    | t=QUOTED_NAME
+    | k=unreserved_keyword
+    | QMARK // {addRecognitionError("Bind variables cannot be used for role names");}
+    ;
 
 constant
     : t=STRING_LITERAL

@@ -198,3 +198,10 @@ func (v *Visitor) VisitDropMaterializedViewStatement(ctx *parser.DropMaterialize
 		Name:     v.Visit(ctx.ColumnFamilyName()).(*ObjectRef),
 	}
 }
+
+func (v *Visitor) VisitGrantRoleStatement(ctx *parser.GrantRoleStatementContext) any {
+	return &GrantRoleStatement{
+		Role:    v.Visit(ctx.GetRole()).(Identifier),
+		Grantee: v.Visit(ctx.GetGrantee()).(Identifier),
+	}
+}

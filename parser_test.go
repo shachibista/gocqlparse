@@ -1494,6 +1494,20 @@ func TestParseStatementDropMaterializedView(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropMaterializedViewStatement() })
 }
 
+func TestParseStatementGrantRole(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "grant admin to test",
+			expected: &ast.GrantRoleStatement{
+				Role:    ast.UnquotedIdentifier("admin"),
+				Grantee: ast.UnquotedIdentifier("test"),
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.GrantRoleStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

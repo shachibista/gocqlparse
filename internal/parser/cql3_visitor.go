@@ -80,6 +80,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#truncateStatement.
 	VisitTruncateStatement(ctx *TruncateStatementContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#grantRoleStatement.
+	VisitGrantRoleStatement(ctx *GrantRoleStatementContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#dropUserStatement.
 	VisitDropUserStatement(ctx *DropUserStatementContext) interface{}
 
@@ -125,6 +128,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#userTypeName.
 	VisitUserTypeName(ctx *UserTypeNameContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#userOrRoleName.
+	VisitUserOrRoleName(ctx *UserOrRoleNameContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#KsNameIdent.
 	VisitKsNameIdent(ctx *KsNameIdentContext) interface{}
 
@@ -145,6 +151,9 @@ type Cql3Visitor interface {
 
 	// Visit a parse tree produced by Cql3Parser#idxName.
 	VisitIdxName(ctx *IdxNameContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#roleName.
+	VisitRoleName(ctx *RoleNameContext) interface{}
 
 	// Visit a parse tree produced by Cql3Parser#constant.
 	VisitConstant(ctx *ConstantContext) interface{}
