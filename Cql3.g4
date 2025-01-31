@@ -54,7 +54,7 @@ cqlStatement
 //     | st34=dropRoleStatement               { $stmt = st34; }
 //     | st35=listRolesStatement              { $stmt = st35; }
        | st36=grantRoleStatement
-//     | st37=revokeRoleStatement             { $stmt = st37; }
+       | st37=revokeRoleStatement
 //     | st38=createMaterializedViewStatement { $stmt = st38; }
        | st39=dropMaterializedViewStatement
 //     | st40=alterMaterializedViewStatement  { $stmt = st40; }
@@ -914,16 +914,15 @@ grantRoleStatement
           grantee=userOrRoleName
     ;
 
-// /**
-//  * REVOKE ROLE <rolename> FROM <revokee>
-//  */
-// revokeRoleStatement
-//     : K_REVOKE
-//           role=userOrRoleName
-//       K_FROM
-//           revokee=userOrRoleName
-//       { $stmt = new RevokeRoleStatement(role, revokee); }
-//     ;
+/**
+ * REVOKE ROLE <rolename> FROM <revokee>
+ */
+revokeRoleStatement
+    : K_REVOKE
+          role=userOrRoleName
+      K_FROM
+          revokee=userOrRoleName
+    ;
 
 // listPermissionsStatement
 //     @init {

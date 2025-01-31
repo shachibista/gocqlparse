@@ -111,3 +111,8 @@ type GrantRoleStatement struct {
 	Role    Identifier
 	Grantee Identifier
 }
+
+type RevokeRoleStatement struct {
+	Role    Identifier
+	Revokee Identifier
+}

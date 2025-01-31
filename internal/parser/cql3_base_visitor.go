@@ -108,6 +108,10 @@ func (v *BaseCql3Visitor) VisitGrantRoleStatement(ctx *GrantRoleStatementContext
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitRevokeRoleStatement(ctx *RevokeRoleStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitDropUserStatement(ctx *DropUserStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }

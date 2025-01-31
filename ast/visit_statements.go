@@ -205,3 +205,10 @@ func (v *Visitor) VisitGrantRoleStatement(ctx *parser.GrantRoleStatementContext)
 		Grantee: v.Visit(ctx.GetGrantee()).(Identifier),
 	}
 }
+
+func (v *Visitor) VisitRevokeRoleStatement(ctx *parser.RevokeRoleStatementContext) any {
+	return &RevokeRoleStatement{
+		Role:    v.Visit(ctx.GetRole()).(Identifier),
+		Revokee: v.Visit(ctx.GetRevokee()).(Identifier),
+	}
+}

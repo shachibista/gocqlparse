@@ -1508,6 +1508,20 @@ func TestParseStatementGrantRole(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.GrantRoleStatement() })
 }
 
+func TestParseStatementRevokeRole(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "revoke admin from test",
+			expected: &ast.RevokeRoleStatement{
+				Role:    ast.UnquotedIdentifier("admin"),
+				Revokee: ast.UnquotedIdentifier("test"),
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.RevokeRoleStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 
