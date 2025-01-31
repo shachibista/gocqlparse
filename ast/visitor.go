@@ -567,6 +567,23 @@ func (v *Visitor) VisitUserOrRoleName(ctx *parser.UserOrRoleNameContext) any {
 	return v.Visit(ctx.RoleName())
 }
 
+func (v *Visitor) VisitUserPassword(ctx *parser.UserPasswordContext) any {
+	if ctx.K_GENERATED() != nil {
+		return GeneratedPassword
+	}
+
+	if ctx.K_HASHED() != nil {
+		return HashedPassword(unwrapStr(ctx.GetV().GetText()))
+	}
+
+	if ctx.K_PASSWORD() != nil {
+		return PlainPassword(unwrapStr(ctx.GetV().GetText()))
+	}
+
+	v.Err(ctx, "unknown password setting")
+	return nil
+}
+
 func visitIdent(ctx antlr.ParserRuleContext) Identifier {
 	id := ctx.GetText()
 

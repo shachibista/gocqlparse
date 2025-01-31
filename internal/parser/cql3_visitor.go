@@ -98,6 +98,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#revokeRoleStatement.
 	VisitRevokeRoleStatement(ctx *RevokeRoleStatementContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#createUserStatement.
+	VisitCreateUserStatement(ctx *CreateUserStatementContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#dropUserStatement.
 	VisitDropUserStatement(ctx *DropUserStatementContext) interface{}
 
@@ -118,6 +121,9 @@ type Cql3Visitor interface {
 
 	// Visit a parse tree produced by Cql3Parser#listSuperUsersStatement.
 	VisitListSuperUsersStatement(ctx *ListSuperUsersStatementContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#userPassword.
+	VisitUserPassword(ctx *UserPasswordContext) interface{}
 
 	// Visit a parse tree produced by Cql3Parser#IdentIdent.
 	VisitIdentIdent(ctx *IdentIdentContext) interface{}

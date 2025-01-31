@@ -28,7 +28,7 @@ go get github.com/shachibista/gocqlparse
 | `GRANT PERMISSIONS`             |                    | Moderate
 | `REVOKE PERMISSIONS`            |                    | Moderate
 | `LIST PERMISSIONS`              |                    | Moderate
-| `CREATE USER`                   |                    | Easy
+| `CREATE USER`                   | :white_check_mark: |
 | `ALTER USER`                    |                    | Easy
 | `DROP USER`                     | :white_check_mark: |
 | `LIST USERS`                    | :white_check_mark: |

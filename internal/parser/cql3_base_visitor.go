@@ -128,6 +128,10 @@ func (v *BaseCql3Visitor) VisitRevokeRoleStatement(ctx *RevokeRoleStatementConte
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitCreateUserStatement(ctx *CreateUserStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitDropUserStatement(ctx *DropUserStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -153,6 +157,10 @@ func (v *BaseCql3Visitor) VisitListRolesStatement(ctx *ListRolesStatementContext
 }
 
 func (v *BaseCql3Visitor) VisitListSuperUsersStatement(ctx *ListSuperUsersStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitUserPassword(ctx *UserPasswordContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

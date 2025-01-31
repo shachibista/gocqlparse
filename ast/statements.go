@@ -151,3 +151,10 @@ type AlterMaterializedViewStatement struct {
 	Name       *ObjectRef
 	Properties []*Property
 }
+
+type CreateUserStatement struct {
+	IfNotExists bool
+	Username    Identifier
+	Password    Password
+	Superuser   bool
+}

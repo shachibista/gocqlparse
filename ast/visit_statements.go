@@ -267,3 +267,17 @@ func (v *Visitor) VisitAlterMaterializedViewStatement(ctx *parser.AlterMateriali
 		Properties: v.Visit(ctx.Properties()).([]*Property),
 	}
 }
+
+func (v *Visitor) VisitCreateUserStatement(ctx *parser.CreateUserStatementContext) any {
+	var password Password
+	if ctx.K_WITH() != nil {
+		password = v.Visit(ctx.UserPassword())
+	}
+
+	return &CreateUserStatement{
+		IfNotExists: ctx.IfNotExists() != nil,
+		Username:    v.Visit(ctx.Username()).(Identifier),
+		Password:    password,
+		Superuser:   ctx.K_SUPERUSER() != nil,
+	}
+}

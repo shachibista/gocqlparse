@@ -36,7 +36,7 @@ cqlStatement
 //     | st16=grantPermissionsStatement       { $stmt = st16; }
 //     | st17=revokePermissionsStatement      { $stmt = st17; }
 //     | st18=listPermissionsStatement        { $stmt = st18; }
-//     | st19=createUserStatement             { $stmt = st19; }
+       | st19=createUserStatement
 //     | st20=alterUserStatement              { $stmt = st20; }
        | st21=dropUserStatement
        | st22=listUsersStatement
@@ -977,35 +977,14 @@ revokeRoleStatement
 //       { $res = FunctionResource.functionFromCql($fn.s.keyspace, $fn.s.name, argsTypes); }
 //     ;
 
-// /**
-//  * CREATE USER [IF NOT EXISTS] <username> [WITH PASSWORD <password>] [SUPERUSER|NOSUPERUSER]
-//  */
-// createUserStatement
-//     @init {
-//         RoleOptions opts = new RoleOptions();
-//         opts.setOption(IRoleManager.Option.LOGIN, true);
-//         boolean superuser = false;
-//         boolean ifNotExists = false;
-//         RoleName name = new RoleName();
-//     }
-//     : K_CREATE K_USER (K_IF K_NOT K_EXISTS { ifNotExists = true; })? u=username { name.setName($u.text, true); }
-//       ( K_WITH userPassword[opts] )?
-//       ( K_SUPERUSER { superuser = true; } | K_NOSUPERUSER { superuser = false; } )?
-//       { opts.setOption(IRoleManager.Option.SUPERUSER, superuser);
-//         if (opts.getPassword().isPresent() && opts.getHashedPassword().isPresent())
-//         {
-//            throw new SyntaxException("Options 'password' and 'hashed password' are mutually exclusive");
-//         }
-//         if (opts.getPassword().isPresent() && opts.isGeneratedPassword())
-//         {
-//            throw new SyntaxException("Options 'password' and 'generated password' are mutually exclusive");
-//         }
-//         if (opts.getHashedPassword().isPresent() && opts.isGeneratedPassword())
-//         {
-//            throw new SyntaxException("Options 'hashed password' and 'generated password' are mutually exclusive");
-//         }
-//         $stmt = new CreateRoleStatement(name, opts, DCPermissions.all(), CIDRPermissions.all(), ifNotExists); }
-//     ;
+/**
+ * CREATE USER [IF NOT EXISTS] <username> [WITH PASSWORD <password>] [SUPERUSER|NOSUPERUSER]
+ */
+createUserStatement
+   : K_CREATE K_USER ifNotExists? u=username
+      ( K_WITH userPassword )?
+      ( K_SUPERUSER | K_NOSUPERUSER )?
+    ;
 
 // /**
 //  * ALTER USER [IF EXISTS] <username> [WITH PASSWORD <password>] [SUPERUSER|NOSUPERUSER]
@@ -1202,12 +1181,12 @@ listSuperUsersStatement
 //     : cidr=STRING_LITERAL { builder.add($cidr.text); }
 //     ;
 
-// // for backwards compatibility in CREATE/ALTER USER, this has no '='
-// userPassword[RoleOptions opts]
-//     :  K_PASSWORD v=STRING_LITERAL { opts.setOption(IRoleManager.Option.PASSWORD, $v.text); }
-//     |  K_HASHED K_PASSWORD v=STRING_LITERAL { opts.setOption(IRoleManager.Option.HASHED_PASSWORD, $v.text); }
-//     |  K_GENERATED K_PASSWORD { opts.setOption(IRoleManager.Option.GENERATED_PASSWORD, Boolean.TRUE); }
-//     ;
+// for backwards compatibility in CREATE/ALTER USER, this has no '='
+userPassword
+    :  K_PASSWORD v=STRING_LITERAL
+    |  K_HASHED K_PASSWORD v=STRING_LITERAL
+    |  K_GENERATED K_PASSWORD
+    ;
 
 // /**
 //  * DESCRIBE statement(s)
