@@ -96,6 +96,10 @@ func (v *BaseCql3Visitor) VisitTruncateStatement(ctx *TruncateStatementContext) 
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitDropUserStatement(ctx *DropUserStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitAddIdentityStatement(ctx *AddIdentityStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -281,6 +285,10 @@ func (v *BaseCql3Visitor) VisitTuple_type(ctx *Tuple_typeContext) interface{} {
 }
 
 func (v *BaseCql3Visitor) VisitVector_type(ctx *Vector_typeContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitUsername(ctx *UsernameContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

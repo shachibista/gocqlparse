@@ -38,7 +38,7 @@ cqlStatement
 //     | st18=listPermissionsStatement        { $stmt = st18; }
 //     | st19=createUserStatement             { $stmt = st19; }
 //     | st20=alterUserStatement              { $stmt = st20; }
-//     | st21=dropUserStatement               { $stmt = st21; }
+       | st21=dropUserStatement
        | st22=listUsersStatement
 //     | st23=createTriggerStatement          { $stmt = st23; }
 //     | st24=dropTriggerStatement            { $stmt = st24; }
@@ -1060,16 +1060,12 @@ truncateStatement
 //       }
 //     ;
 
-// /**
-//  * DROP USER [IF EXISTS] <username>
-//  */
-// dropUserStatement
-//     @init {
-//         boolean ifExists = false;
-//         RoleName name = new RoleName();
-//     }
-//     : K_DROP K_USER (K_IF K_EXISTS { ifExists = true; })? u=username { name.setName($u.text, true); $stmt = new DropRoleStatement(name, ifExists); }
-//     ;
+/**
+ * DROP USER [IF EXISTS] <username>
+ */
+dropUserStatement
+    : K_DROP K_USER ifExists? u=username
+    ;
 
 /**
  * ADD IDENTITY [IF NOT EXISTS] <identity> TO ROLE <role>
@@ -1718,11 +1714,11 @@ vector_type
     : K_VECTOR '<' t1=comparatorType ','  d=INTEGER '>'
     ;
 
-// username
-//     : IDENT
-//     | STRING_LITERAL
-//     | QUOTED_NAME { addRecognitionError("Quoted strings are are not supported for user names and USER is deprecated, please use ROLE");}
-//     ;
+username
+    : IDENT
+    | STRING_LITERAL
+    | QUOTED_NAME
+    ;
 
 identity
     : IDENT

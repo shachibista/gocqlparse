@@ -504,6 +504,19 @@ func (v *Visitor) VisitIdentity(ctx *parser.IdentityContext) any {
 	return nil
 }
 
+func (v *Visitor) VisitUsername(ctx *parser.UsernameContext) any {
+	if ctx.IDENT() != nil {
+		return visitIdent(ctx)
+	}
+
+	if ctx.STRING_LITERAL() != nil {
+		return visitQuotedIdent(ctx)
+	}
+
+	v.Err(ctx, "quoted strings are not supported for username")
+	return nil
+}
+
 func visitIdent(ctx antlr.ParserRuleContext) Identifier {
 	id := ctx.GetText()
 

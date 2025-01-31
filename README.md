@@ -30,7 +30,7 @@ go get github.com/shachibista/gocqlparse
 | `LIST PERMISSIONS`              |                    | Moderate
 | `CREATE USER`                   |                    | Easy
 | `ALTER USER`                    |                    | Easy
-| `DROP USER`                     |                    | Easy
+| `DROP USER`                     | :white_check_mark: |
 | `LIST USERS`                    | :white_check_mark: |
 | `CREATE TRIGGER`                |                    | Easy
 | `DROP TRIGGER`                  |                    | Easy

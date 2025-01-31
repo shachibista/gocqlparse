@@ -177,3 +177,10 @@ func (v *Visitor) VisitAddIdentityStatement(ctx *parser.AddIdentityStatementCont
 		Role:        v.Visit(ctx.GetR()).(Identifier),
 	}
 }
+
+func (v *Visitor) VisitDropUserStatement(ctx *parser.DropUserStatementContext) any {
+	return &DropUserStatement{
+		IfExists: ctx.IfExists() != nil,
+		Username: v.Visit(ctx.Username()).(Identifier),
+	}
+}
