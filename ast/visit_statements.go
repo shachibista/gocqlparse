@@ -224,3 +224,10 @@ func (v *Visitor) VisitListRolesStatement(ctx *parser.ListRolesStatementContext)
 		Recursive: ctx.K_NORECURSIVE() == nil,
 	}
 }
+
+func (v *Visitor) VisitDropRoleStatement(ctx *parser.DropRoleStatementContext) any {
+	return &DropRoleStatement{
+		Role:     v.Visit(ctx.UserOrRoleName()).(Identifier),
+		IfExists: ctx.IfExists() != nil,
+	}
+}

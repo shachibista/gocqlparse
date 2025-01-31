@@ -121,3 +121,8 @@ type ListRolesStatement struct {
 	Role      Identifier
 	Recursive bool
 }
+
+type DropRoleStatement struct {
+	IfExists bool
+	Role     Identifier
+}

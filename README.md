@@ -43,7 +43,7 @@ go get github.com/shachibista/gocqlparse
 | `DROP AGGREGATE`                |                    | Moderate
 | `CREATE ROLE`                   |                    | Moderate
 | `ALTER ROLE`                    |                    | Moderate
-| `DROP ROLE`                     |                    | Easy
+| `DROP ROLE`                     | :white_check_mark: |
 | `LIST ROLES`                    | :white_check_mark: |
 | `GRANT ROLE`                    | :white_check_mark: |
 | `REVOKE ROLE`                   | :white_check_mark: |

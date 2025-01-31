@@ -1549,6 +1549,26 @@ func TestParseStatementListRoles(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.ListRolesStatement() })
 }
 
+func TestParseStatementDropRole(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "drop role test",
+			expected: &ast.DropRoleStatement{
+				Role: ast.UnquotedIdentifier("test"),
+			},
+		},
+		{
+			input: "drop role if exists test",
+			expected: &ast.DropRoleStatement{
+				IfExists: true,
+				Role:     ast.UnquotedIdentifier("test"),
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.DropRoleStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 

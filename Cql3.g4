@@ -51,7 +51,7 @@ cqlStatement
 //     | st31=dropAggregateStatement          { $stmt = st31; }
 //     | st32=createRoleStatement             { $stmt = st32; }
 //     | st33=alterRoleStatement              { $stmt = st33; }
-//     | st34=dropRoleStatement               { $stmt = st34; }
+       | st34=dropRoleStatement
        | st35=listRolesStatement
        | st36=grantRoleStatement
        | st37=revokeRoleStatement
@@ -1169,16 +1169,12 @@ listUsersStatement
 //       }
 //     ;
 
-// /**
-//  * DROP ROLE [IF EXISTS] <rolename>
-//  */
-// dropRoleStatement
-//     @init {
-//         boolean ifExists = false;
-//     }
-//     : K_DROP K_ROLE (K_IF K_EXISTS { ifExists = true; })? name=userOrRoleName
-//       { $stmt = new DropRoleStatement(name, ifExists); }
-//     ;
+/**
+ * DROP ROLE [IF EXISTS] <rolename>
+ */
+dropRoleStatement
+    : K_DROP K_ROLE ifExists? name=userOrRoleName
+    ;
 
 /**
  * LIST ROLES [OF <rolename>] [NORECURSIVE]
