@@ -3,3 +3,5 @@ gen:
 
 test: gen
 	go test -v ./...
+
+.PHONY: gen test
