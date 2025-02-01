@@ -2,6 +2,8 @@ package ast
 
 type (
 	Term            interface{}
+	ListLiteral     []any
+	TupleLiteral    []any
 	SetLiteral      []any
 	MapLiteral      map[any]any
 	UserTypeLiteral map[any]any
@@ -10,20 +12,20 @@ type (
 
 var NullLiteral nullLiteral
 
-type TermOperator string
+type Operator string
 
 const (
-	LiteralCastTermOperator    TermOperator = "literal_cast"
-	CastTermOperator           TermOperator = "cast"
-	AdditionTermOperator       TermOperator = "+"
-	SubtractionTermOperator    TermOperator = "-"
-	MultiplicationTermOperator TermOperator = "*"
-	DivisionTermOperator       TermOperator = "/"
-	RemainderTermOperator      TermOperator = "%"
+	LiteralCastOperator    Operator = "literal_cast"
+	CastOperator           Operator = "cast"
+	AdditionOperator       Operator = "+"
+	SubtractionOperator    Operator = "-"
+	MultiplicationOperator Operator = "*"
+	DivisionOperator       Operator = "/"
+	RemainderOperator      Operator = "%"
 )
 
 type TermOperation struct {
-	Operator TermOperator
+	Operator Operator
 	Left     Term
 	Right    Term
 }

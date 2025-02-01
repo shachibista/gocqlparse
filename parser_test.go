@@ -875,7 +875,7 @@ func TestParseStatementCreateTable(t *testing.T) {
 				Properties: []*ast.Property{
 					{
 						Key: ast.UnquotedIdentifier("replication"),
-						Value: &ast.MapLiteral{
+						Value: ast.MapLiteral{
 							"class": "NetworkTopologyStrategy",
 							"DC1":   "3",
 							"DC2":   "3",
@@ -1098,12 +1098,12 @@ func TestParseTerm(t *testing.T) {
 		{
 			input: "(vector<int, 3>) [1, 2, 3]",
 			expected: &ast.TermOperation{
-				Operator: ast.LiteralCastTermOperator,
+				Operator: ast.LiteralCastOperator,
 				Left: &ast.VectorType{
 					Elem:       &ast.NativeType{"int"},
 					Dimensions: 3,
 				},
-				Right: []any{1, 2, 3},
+				Right: ast.ListLiteral{1, 2, 3},
 			},
 		},
 	}
@@ -1115,15 +1115,15 @@ func TestParseValue(t *testing.T) {
 	cases := []testCase{
 		{
 			input:    "{}",
-			expected: &ast.SetLiteral{},
+			expected: ast.SetLiteral{},
 		},
 		{
 			input:    "{ 1, 2, 3 }",
-			expected: &ast.SetLiteral{1, 2, 3},
+			expected: ast.SetLiteral{1, 2, 3},
 		},
 		{
 			input: "{'age': 30, 'city': 'New York', 'status': 'active'}",
-			expected: &ast.MapLiteral{
+			expected: ast.MapLiteral{
 				"age":    30,
 				"city":   "New York",
 				"status": "active",
@@ -1236,7 +1236,7 @@ func TestParseStatementCreateKeyspace(t *testing.T) {
 				Properties: []*ast.Property{
 					{
 						Key: ast.UnquotedIdentifier("REPLICATION"),
-						Value: &ast.MapLiteral{
+						Value: ast.MapLiteral{
 							"class":              "SimpleStrategy",
 							"replication_factor": 1,
 						},
@@ -1256,7 +1256,7 @@ func TestParseStatementCreateKeyspace(t *testing.T) {
 				Properties: []*ast.Property{
 					{
 						Key: ast.UnquotedIdentifier("REPLICATION"),
-						Value: &ast.MapLiteral{
+						Value: ast.MapLiteral{
 							"class":              "SimpleStrategy",
 							"replication_factor": 1,
 						},
@@ -1282,7 +1282,7 @@ func TestParseStatementAlterKeyspace(t *testing.T) {
 				Properties: []*ast.Property{
 					{
 						Key: ast.UnquotedIdentifier("REPLICATION"),
-						Value: &ast.MapLiteral{
+						Value: ast.MapLiteral{
 							"class":              "SimpleStrategy",
 							"replication_factor": 1,
 						},
@@ -1302,7 +1302,7 @@ func TestParseStatementAlterKeyspace(t *testing.T) {
 				Properties: []*ast.Property{
 					{
 						Key: ast.UnquotedIdentifier("REPLICATION"),
-						Value: &ast.MapLiteral{
+						Value: ast.MapLiteral{
 							"class":              "SimpleStrategy",
 							"replication_factor": 1,
 						},
@@ -1684,7 +1684,7 @@ WITH caching = {
 				Properties: []*ast.Property{
 					{
 						Key: ast.UnquotedIdentifier("caching"),
-						Value: &ast.MapLiteral{
+						Value: ast.MapLiteral{
 							"keys":               "NONE",
 							"rows_per_partition": "15",
 						},

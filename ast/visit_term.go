@@ -26,7 +26,7 @@ func (v *Visitor) VisitTermAddition(ctx *parser.TermAdditionContext) any {
 	}
 
 	return &TermOperation{
-		Operator: TermOperator(otype),
+		Operator: Operator(otype),
 		Left:     lterm,
 		Right:    rterm,
 	}
@@ -49,7 +49,7 @@ func (v *Visitor) VisitTermMultiplication(ctx *parser.TermMultiplicationContext)
 	}
 
 	return &TermOperation{
-		Operator: TermOperator(otype),
+		Operator: Operator(otype),
 		Left:     lterm,
 		Right:    rterm,
 	}
@@ -67,13 +67,13 @@ func (v *Visitor) VisitSimpleTerm(ctx *parser.SimpleTermContext) any {
 		return v.Visit(ctx.GetF())
 	case ctx.GetC() != nil:
 		return &TermOperation{
-			Operator: LiteralCastTermOperator,
+			Operator: LiteralCastOperator,
 			Left:     v.Visit(ctx.GetC()),
 			Right:    v.Visit(ctx.GetT()),
 		}
 	case ctx.K_CAST() != nil:
 		return &TermOperation{
-			Operator: CastTermOperator,
+			Operator: CastOperator,
 			Left:     v.Visit(ctx.GetT()),
 			Right:    v.Visit(ctx.GetN()),
 		}
@@ -103,7 +103,7 @@ func (v *Visitor) VisitValue(ctx *parser.ValueContext) any {
 
 func (v *Visitor) VisitCollectionLiteral(ctx *parser.CollectionLiteralContext) any {
 	if ctx.GetL() != nil {
-		var elements []any
+		var elements ListLiteral
 
 		for _, e := range ctx.GetL().AllTerm() {
 			elements = append(elements, v.Visit(e))
@@ -138,7 +138,7 @@ func (v *Visitor) VisitCollectionLiteral(ctx *parser.CollectionLiteralContext) a
 				elements[terms[i]] = terms[i+1]
 			}
 
-			return &elements
+			return elements
 		} else if s != nil {
 			elements := SetLiteral{
 				v.Visit(ctx.GetT()),
@@ -148,7 +148,7 @@ func (v *Visitor) VisitCollectionLiteral(ctx *parser.CollectionLiteralContext) a
 				elements = append(elements, v.Visit(t))
 			}
 
-			return &elements
+			return elements
 		} else {
 			v.Err(ctx, "unknown literal")
 
@@ -156,7 +156,7 @@ func (v *Visitor) VisitCollectionLiteral(ctx *parser.CollectionLiteralContext) a
 		}
 	}
 
-	return &SetLiteral{}
+	return SetLiteral{}
 }
 
 func (v *Visitor) VisitUsertypeLiteral(ctx *parser.UsertypeLiteralContext) any {
