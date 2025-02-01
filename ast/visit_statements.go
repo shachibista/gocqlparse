@@ -295,3 +295,51 @@ func (v *Visitor) VisitAlterUserStatement(ctx *parser.AlterUserStatementContext)
 		Superuser: ctx.K_SUPERUSER() != nil,
 	}
 }
+
+func (v *Visitor) VisitSelectStatement(ctx *parser.SelectStatementContext) any {
+	var limit, perPartitionLimit int
+	if ctx.K_PARTITION() != nil && ctx.K_LIMIT(0) != nil {
+		perPartitionLimit = v.Visit(ctx.GetRows()).(int)
+	}
+
+	if ctx.K_PARTITION() == nil && ctx.K_LIMIT(0) != nil {
+		limit = v.Visit(ctx.GetRows()).(int)
+	}
+
+	projections := v.Visit(ctx.SelectClause().GetS()).([]*Projection)
+
+	var where []*Relation
+	var groupBy []Selector
+	var orderBy []*OrderByClause
+
+	if ctx.K_WHERE() != nil {
+		for _, rel := range ctx.WhereClause().AllRelationOrExpression() {
+			where = append(where, v.Visit(rel).(*Relation))
+		}
+	}
+
+	if ctx.K_GROUP() != nil {
+		for _, gr := range ctx.AllGroupByClause() {
+			groupBy = append(groupBy, v.Visit(gr.GetS()).(Selector))
+		}
+	}
+
+	if ctx.K_ORDER() != nil {
+		for _, ob := range ctx.AllOrderByClause() {
+			orderBy = append(orderBy, v.Visit(ob).(*OrderByClause))
+		}
+	}
+
+	return &SelectStatement{
+		Distinct:          ctx.SelectClause().K_DISTINCT() != nil,
+		IsJSON:            ctx.K_JSON() != nil,
+		Projections:       projections,
+		From:              v.Visit(ctx.ColumnFamilyName()).(*ObjectRef),
+		Where:             where,
+		GroupBy:           groupBy,
+		OrderBy:           orderBy,
+		PerPartitionLimit: perPartitionLimit,
+		Limit:             limit,
+		AllowFiltering:    ctx.K_FILTERING() != nil,
+	}
+}

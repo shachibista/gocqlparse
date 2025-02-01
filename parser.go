@@ -10,7 +10,8 @@ import (
 
 type Parser struct {
 	*parser.Cql3Parser
-	lexer *parser.Cql3Lexer
+	lexer  *parser.Cql3Lexer
+	tokens *antlr.CommonTokenStream
 }
 
 type syntaxError struct {
@@ -58,6 +59,7 @@ func NewParser(input string) *Parser {
 	return &Parser{
 		p,
 		lexer,
+		tokens,
 	}
 }
 

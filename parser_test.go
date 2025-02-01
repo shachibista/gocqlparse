@@ -518,13 +518,13 @@ func TestParseConstant(t *testing.T) {
 		{
 			input: `$$
 			BEGIN
-    RETURN ($1 ~ $q$[\t\r\n\v\\]$q$);
-END;
+    RETURN ($1 ~ $q$[\t\r\n\v\\]$q$)
+END
 $$`,
 			expected: `
 			BEGIN
-    RETURN ($1 ~ $q$[\t\r\n\v\\]$q$);
-END;
+    RETURN ($1 ~ $q$[\t\r\n\v\\]$q$)
+END
 `,
 		},
 		{
@@ -794,7 +794,7 @@ func TestParseStatementCreateTable(t *testing.T) {
 				id timeuuid PRIMARY KEY,
 				name text MASKED WITH mask_inner(1, null),
 				birth date MASKED WITH mask_default()
-			);`,
+			)`,
 			expected: &ast.CreateTableStatement{
 				ColumnFamily: &ast.ObjectRef{Name: ast.UnquotedIdentifier("patients")},
 				Columns: []*ast.TableColumn{
@@ -1026,40 +1026,40 @@ func TestParseTerm(t *testing.T) {
 	cases := []testCase{
 		{
 			input: "1 + 2",
-			expected: &ast.TermOperation{
-				Operator: ast.AdditionTermOperator,
+			expected: &ast.TermBinaryOperation{
+				Operator: ast.AdditionOperator,
 				Left:     1,
 				Right:    2,
 			},
 		},
 		{
 			input: "1 - 2",
-			expected: &ast.TermOperation{
-				Operator: ast.SubtractionTermOperator,
+			expected: &ast.TermBinaryOperation{
+				Operator: ast.SubtractionOperator,
 				Left:     1,
 				Right:    2,
 			},
 		},
 		{
 			input: "1 / 2",
-			expected: &ast.TermOperation{
-				Operator: ast.DivisionTermOperator,
+			expected: &ast.TermBinaryOperation{
+				Operator: ast.DivisionOperator,
 				Left:     1,
 				Right:    2,
 			},
 		},
 		{
 			input: "1 % 2",
-			expected: &ast.TermOperation{
-				Operator: ast.RemainderTermOperator,
+			expected: &ast.TermBinaryOperation{
+				Operator: ast.RemainderOperator,
 				Left:     1,
 				Right:    2,
 			},
 		},
 		{
 			input: "1 * 2",
-			expected: &ast.TermOperation{
-				Operator: ast.MultiplicationTermOperator,
+			expected: &ast.TermBinaryOperation{
+				Operator: ast.MultiplicationOperator,
 				Left:     1,
 				Right:    2,
 			},
@@ -1097,7 +1097,7 @@ func TestParseTerm(t *testing.T) {
 		},
 		{
 			input: "(vector<int, 3>) [1, 2, 3]",
-			expected: &ast.TermOperation{
+			expected: &ast.TermBinaryOperation{
 				Operator: ast.LiteralCastOperator,
 				Left: &ast.VectorType{
 					Elem:       &ast.NativeType{"int"},
@@ -1797,6 +1797,684 @@ func TestParseStatementAlterUser(t *testing.T) {
 	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.AlterUserStatement() })
 }
 
+func TestParseCollectionSubSelection(t *testing.T) {
+	cases := []testCase{
+		{
+			input: `'hi'`,
+			expected: &ast.CollectionSelector{
+				Index: "hi",
+			},
+		},
+		{
+			input: "1",
+			expected: &ast.CollectionSelector{
+				Index: 1,
+			},
+		},
+		{
+			input: "1..",
+			expected: &ast.CollectionSelector{
+				Range: &ast.ListSliceRange{
+					Left: 1,
+				},
+			},
+		},
+		{
+			input: "1..2",
+			expected: &ast.CollectionSelector{
+				Range: &ast.ListSliceRange{
+					Left:  1,
+					Right: 2,
+				},
+			},
+		},
+		{
+			input: "..2",
+			expected: &ast.CollectionSelector{
+				Range: &ast.ListSliceRange{
+					Right: 2,
+				},
+			},
+		},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.CollectionSubSelection() })
+}
+
+func TestParseSelector(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "test",
+			expected: &ast.Projection{
+				Expression: &ast.ColumnSelector{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "test as hello",
+			expected: &ast.Projection{
+				Expression: &ast.ColumnSelector{Name: ast.UnquotedIdentifier("test")},
+				Alias:      ast.UnquotedIdentifier("hello"),
+			},
+		},
+		{
+			input: "1 as count",
+			expected: &ast.Projection{
+				Expression: 1,
+				Alias:      ast.UnquotedIdentifier("count"),
+			},
+		},
+		{
+			input: "1 + 1",
+			expected: &ast.Projection{
+				Expression: &ast.TermBinaryOperation{
+					Operator: "+",
+					Left:     1,
+					Right:    1,
+				},
+			},
+		},
+		{
+			input: "a.b.c",
+			expected: &ast.Projection{
+				Expression: &ast.ColumnSelector{
+					Name: ast.UnquotedIdentifier("a"),
+					Modifiers: []ast.SelectorModifier{
+						&ast.FieldSelector{
+							Name: ast.UnquotedIdentifier("b"),
+						},
+						&ast.FieldSelector{
+							Name: ast.UnquotedIdentifier("c"),
+						},
+					},
+				},
+			},
+		},
+		{
+			input: "a['b']['c']",
+			expected: &ast.Projection{
+				Expression: &ast.ColumnSelector{
+					Name: ast.UnquotedIdentifier("a"),
+					Modifiers: []ast.SelectorModifier{
+						&ast.CollectionSelector{
+							Index: "b",
+						},
+						&ast.CollectionSelector{
+							Index: "c",
+						},
+					},
+				},
+			},
+		},
+		{
+			input: "a[3]",
+			expected: &ast.Projection{
+				Expression: &ast.ColumnSelector{
+					Name: ast.UnquotedIdentifier("a"),
+					Modifiers: []ast.SelectorModifier{
+						&ast.CollectionSelector{
+							Index: 3,
+						},
+					},
+				},
+			},
+		},
+		{
+			input: "a[2..3]",
+			expected: &ast.Projection{
+				Expression: &ast.ColumnSelector{
+					Name: ast.UnquotedIdentifier("a"),
+					Modifiers: []ast.SelectorModifier{
+						&ast.CollectionSelector{
+							Range: &ast.ListSliceRange{
+								Left:  2,
+								Right: 3,
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			input: "dateOf(created_at) AS creation_date",
+			expected: &ast.Projection{
+				Expression: &ast.Function{
+					Name: &ast.ObjectRef{Name: ast.UnquotedIdentifier("dateOf")},
+					Arguments: []ast.Term{
+						&ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("created_at"),
+						},
+					},
+				},
+				Alias: ast.UnquotedIdentifier("creation_date"),
+			},
+		},
+		{
+			input: "COUNT(*)",
+			expected: &ast.Projection{
+				Expression: &ast.Function{
+					Name: &ast.ObjectRef{Name: ast.UnquotedIdentifier("count")},
+					Arguments: []ast.Term{
+						"*",
+					},
+				},
+			},
+		},
+		{
+			input: "MAX(CAST(column_name AS int))",
+			expected: &ast.Projection{
+				Expression: &ast.Function{
+					Name: &ast.ObjectRef{Name: ast.UnquotedIdentifier("MAX")},
+					Arguments: []ast.Term{
+						&ast.TermBinaryOperation{
+							Operator: ast.CastOperator,
+							Left:     &ast.ColumnSelector{Name: ast.UnquotedIdentifier("column_name")},
+							Right:    &ast.NativeType{"int"},
+						},
+					},
+				},
+			},
+		},
+		{
+			input: "(column_name * 2) + (CAST(another_column AS float) / 3)",
+			expected: &ast.Projection{
+				Expression: &ast.TermBinaryOperation{
+					Operator: ast.AdditionOperator,
+					Left: &ast.TermBinaryOperation{
+						Operator: ast.MultiplicationOperator,
+						Left:     &ast.ColumnSelector{Name: ast.UnquotedIdentifier("column_name")},
+						Right:    2,
+					},
+					Right: &ast.TermBinaryOperation{
+						Operator: ast.DivisionOperator,
+						Left: &ast.TermBinaryOperation{
+							Operator: ast.CastOperator,
+							Left:     &ast.ColumnSelector{Name: ast.UnquotedIdentifier("another_column")},
+							Right:    &ast.NativeType{"float"},
+						},
+						Right: 3,
+					},
+				},
+			},
+		},
+		// TODO: Add more tests for selectors
+		// - typehint
+		// - map/list and set selection
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.Selector() })
+}
+
+func TestParseStatementSelect(t *testing.T) {
+	cases := []testCase{
+		{
+			input: "select 1 from test",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: 1,
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "select 1 as count from test",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: 1,
+						Alias:      ast.UnquotedIdentifier("count"),
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("test"),
+				},
+			},
+		},
+		{
+			input: "SELECT * FROM users",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: "*",
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+			},
+		},
+		{
+			input: "SELECT id, name, email FROM users",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("name"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("email"),
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+			},
+		},
+		{
+			input: "SELECT name, age FROM users WHERE id = 123",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("name"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("age"),
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+				Where: []*ast.Relation{
+					{
+						Type: ast.EqualityRelationType,
+						Left: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+						Right: 123,
+					},
+				},
+			},
+		},
+		{
+			input: "SELECT name, age FROM users WHERE id = 123 AND email = 'user@example.com'",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("name"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("age"),
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+				Where: []*ast.Relation{
+					{
+						Type: ast.EqualityRelationType,
+						Left: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+						Right: 123,
+					},
+					{
+						Type: ast.EqualityRelationType,
+						Left: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("email"),
+						},
+						Right: "user@example.com",
+					},
+				},
+			},
+		},
+		{
+			input: "SELECT id, name FROM users WHERE id IN (101, 102, 103)",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("name"),
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+				Where: []*ast.Relation{
+					{
+						Type: ast.InRelationType,
+						Left: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+						Right: &ast.TupleLiteral{
+							101, 102, 103,
+						},
+					},
+				},
+			},
+		},
+		{
+			input: "SELECT id, name FROM users WHERE age > 21 ORDER BY name ASC",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("name"),
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+				Where: []*ast.Relation{
+					{
+						Type: ast.GreaterRelationType,
+						Left: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("age"),
+						},
+						Right: 21,
+					},
+				},
+				OrderBy: []*ast.OrderByClause{
+					{
+						Column:    ast.UnquotedIdentifier("name"),
+						Ascending: true,
+					},
+				},
+			},
+		},
+		{
+			input: "SELECT id, name FROM users LIMIT 10",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("name"),
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+				Limit: 10,
+			},
+		},
+		{
+			input: "SELECT id, email FROM users WHERE age > 25 ALLOW FILTERING",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("email"),
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+				Where: []*ast.Relation{
+					{
+						Type: ast.GreaterRelationType,
+						Left: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("age"),
+						},
+						Right: 25,
+					},
+				},
+				AllowFiltering: true,
+			},
+		},
+		{
+			input: "SELECT COUNT(*) FROM users",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.Function{
+							Name: &ast.ObjectRef{
+								Name: ast.UnquotedIdentifier("count"),
+							},
+							Arguments: []ast.Term{
+								"*",
+							},
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+			},
+		},
+		{
+			input: "SELECT DISTINCT city FROM users",
+			expected: &ast.SelectStatement{
+				Distinct: true,
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("city"),
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+			},
+		},
+		{
+			input: "SELECT city, COUNT(*) FROM users GROUP BY city",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("city"),
+						},
+					},
+					{
+						Expression: &ast.Function{
+							Name: &ast.ObjectRef{
+								Name: ast.UnquotedIdentifier("count"),
+							},
+							Arguments: []ast.Term{
+								"*",
+							},
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+				GroupBy: []ast.Selector{
+					&ast.ColumnSelector{
+						Name: ast.UnquotedIdentifier("city"),
+					},
+				},
+			},
+		},
+		{
+			input: "SELECT id, name, TTL(name), WRITETIME(email) FROM users",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("name"),
+						},
+					},
+					{
+						Expression: &ast.Function{
+							Name: &ast.ObjectRef{Name: ast.UnquotedIdentifier("ttl")},
+							Arguments: []ast.Term{
+								&ast.ColumnSelector{
+									Name: ast.UnquotedIdentifier("name"),
+								},
+							},
+						},
+					},
+					{
+						Expression: &ast.Function{
+							Name: &ast.ObjectRef{Name: ast.UnquotedIdentifier("writetime")},
+							Arguments: []ast.Term{
+								&ast.ColumnSelector{
+									Name: ast.UnquotedIdentifier("email"),
+								},
+							},
+						},
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+			},
+		},
+		{
+			input: "SELECT * FROM users WHERE TOKEN(id) > TOKEN(100)",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: "*",
+					},
+				},
+				From: &ast.ObjectRef{
+					Name: ast.UnquotedIdentifier("users"),
+				},
+				Where: []*ast.Relation{
+					{
+						Type: ast.GreaterRelationType,
+						Left: &ast.Function{
+							Name: &ast.ObjectRef{Name: ast.UnquotedIdentifier("token")},
+							Arguments: []ast.Term{
+								ast.UnquotedIdentifier("id"),
+							},
+						},
+						Right: &ast.Function{
+							Name: &ast.ObjectRef{Name: ast.UnquotedIdentifier("TOKEN")},
+							Arguments: []ast.Term{
+								100,
+							},
+						},
+					},
+				},
+			},
+		},
+		// {input: "SELECT id, name FROM users WHERE age > 21 ORDER BY last_name DESC, id ASC"},
+		{
+			input: "SELECT id, name FROM users PER PARTITION LIMIT 2",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("name"),
+						},
+					},
+				},
+				From:              &ast.ObjectRef{Name: ast.UnquotedIdentifier("users")},
+				PerPartitionLimit: 2,
+			},
+		},
+		// {input: "SELECT id, email FROM users WHERE city = 'New York' ALLOW FILTERING"},
+		{
+			input: "SELECT JSON * FROM users",
+			expected: &ast.SelectStatement{
+				IsJSON: true,
+				Projections: []*ast.Projection{
+					{
+						Expression: "*",
+					},
+				},
+				From: &ast.ObjectRef{Name: ast.UnquotedIdentifier("users")},
+			},
+		},
+		// {input: "SELECT id, name FROM users WHERE age > 25 AND email = 'user@example.com' AND active = true"},
+		// {input: "SELECT id FROM users WHERE (age, city) IN ((30, 'New York'), (25, 'Los Angeles'))"},
+		// {input: "SELECT * FROM orders WHERE customer_id = 123 AND order_status IN ('shipped', 'pending')"},
+		{
+			input: "SELECT id, name FROM users WHERE age > 21 ORDER BY last_name DESC, id ASC",
+			expected: &ast.SelectStatement{
+				Projections: []*ast.Projection{
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("id"),
+						},
+					},
+					{
+						Expression: &ast.ColumnSelector{
+							Name: ast.UnquotedIdentifier("name"),
+						},
+					},
+				},
+				From: &ast.ObjectRef{Name: ast.UnquotedIdentifier("users")},
+				Where: []*ast.Relation{
+					{
+						Type:  ast.GreaterRelationType,
+						Left:  &ast.ColumnSelector{Name: ast.UnquotedIdentifier("age")},
+						Right: 21,
+					},
+				},
+				OrderBy: []*ast.OrderByClause{
+					{
+						Column:    ast.UnquotedIdentifier("last_name"),
+						Ascending: false,
+					},
+					{
+						Column:    ast.UnquotedIdentifier("id"),
+						Ascending: true,
+					},
+				},
+			},
+		},
+		// {input: "SELECT city, age_group, COUNT(*) FROM users GROUP BY city, age_group"},
+		// {input: "SELECT id, CAST(age AS text) FROM users"},
+		// {input: "SELECT \"UserID\", \"UserName\" FROM users"},
+		// {input: "SELECT \"select\", \"from\", \"where\" FROM reserved_words_table"},
+		// {input: "SELECT \"column-with-dash\", \"column@symbol\" FROM special_chars_table"},
+		// {input: "SELECT id FROM users WHERE non_partitioned_column = 'value'"},
+		// {input: "SELECT id FROM users WHERE id IN (1, 2, 3, ..., 1000)"},
+		// {input: "SELECT users.name, orders.total FROM users JOIN orders ON users.id = orders.user_id"},
+	}
+
+	testEqual[any](t, cases, func(p *Parser) antlr.ParseTree { return p.SelectStatement() })
+}
+
 func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr.ParseTree) {
 	t.Helper()
 
@@ -1808,11 +2486,18 @@ func testEqual[T any](t *testing.T, cases []testCase, parser func(*Parser) antlr
 		p := NewParser(tc.input)
 		st, err := parseRule[T](func() antlr.ParseTree { return parser(p) })
 		if err != nil {
+			var tokenRepr []string
+			for _, tok := range p.tokens.GetAllTokens() {
+				tokenRepr = append(tokenRepr, tok.GetText())
+			}
+
+			t.Log(strings.Join(tokenRepr, ", "))
+
 			t.Fatal(err)
 		}
 
 		if tc.test == nil {
-			assert.Equal(t, tc.expected, st)
+			assert.Equal(t, tc.expected, st, tc.input)
 		} else {
 			tc.test(t, tc, st)
 		}

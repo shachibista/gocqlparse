@@ -10,7 +10,7 @@ go get github.com/shachibista/gocqlparse
 
 | Statement                       | Status             | Difficulty
 |---------------------------------|--------------------|-----------
-| `SELECT`                        |                    | Hard
+| `SELECT`                        | :large_orange_diamond: | Hard
 | `INSERT`                        |                    | Moderate
 | `UPDATE`                        |                    | Moderate
 | `BATCH`                         |                    | Hard

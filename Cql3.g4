@@ -18,12 +18,12 @@ cqlStatements
 
 cqlStatement
 //     @after{ if (stmt != null) stmt.setBindVariables(bindVariables); }
-//     : st1= selectStatement                 { $stmt = st1; }
+       : st1= selectStatement
 //     | st2= insertStatement                 { $stmt = st2; }
 //     | st3= updateStatement                 { $stmt = st3; }
 //     | st4= batchStatement                  { $stmt = st4; }
 //     | st5= deleteStatement                 { $stmt = st5; }
-       : st6= useStatement
+       | st6= useStatement
        | st7= truncateStatement
        | st8= createKeyspaceStatement
        | st9= createTableStatement
@@ -71,227 +71,177 @@ useStatement
     : K_USE ks=keyspaceName
     ;
 
-// /**
-//  * SELECT <expression>
-//  * FROM <CF>
-//  * WHERE KEY = "key1" AND COL > 1 AND COL < 100
-//  * LIMIT <NUMBER>;
-//  */
-// selectStatement
-//     @init {
-//         Term.Raw limit = null;
-//         Term.Raw perPartitionLimit = null;
-//         List<Ordering.Raw> orderings = new ArrayList<>();
-//         List<Selectable.Raw> groups = new ArrayList<>();
-//         boolean allowFiltering = false;
-//         boolean isJson = false;
-//     }
-//     : K_SELECT
-//         // json is a valid column name. By consequence, we need to resolve the ambiguity for "json - json"
-//       ( (K_JSON selectClause)=> K_JSON { isJson = true; } )? sclause=selectClause
-//       K_FROM cf=columnFamilyName
-//       ( K_WHERE wclause=whereClause )?
-//       ( K_GROUP K_BY groupByClause[groups] ( ',' groupByClause[groups] )* )?
-//       ( K_ORDER K_BY orderByClause[orderings] ( ',' orderByClause[orderings] )* )?
-//       ( K_PER K_PARTITION K_LIMIT rows=intValue { perPartitionLimit = rows; } )?
-//       ( K_LIMIT rows=intValue { limit = rows; } )?
-//       ( K_ALLOW K_FILTERING  { allowFiltering = true; } )?
-//       {
-//           SelectStatement.Parameters params = new SelectStatement.Parameters(orderings,
-//                                                                              groups,
-//                                                                              $sclause.isDistinct,
-//                                                                              allowFiltering,
-//                                                                              isJson);
-//           WhereClause where = wclause == null ? WhereClause.empty() : wclause.build();
-//           $expr = new SelectStatement.RawStatement(cf, params, $sclause.selectors, where, limit, perPartitionLimit);
-//       }
-//     ;
+/**
+ * SELECT <expression>
+ * FROM <CF>
+ * WHERE KEY = "key1" AND COL > 1 AND COL < 100
+ * LIMIT <NUMBER>;
+ */
+selectStatement
+   : K_SELECT
+        // json is a valid column name. By consequence, we need to resolve the ambiguity for "json - json"
+      K_JSON?
+      sclause=selectClause
+      K_FROM cf=columnFamilyName
+      ( K_WHERE wclause=whereClause )?
+      ( K_GROUP K_BY groupByClause ( ',' groupByClause )* )?
+      ( K_ORDER K_BY orderByClause ( ',' orderByClause )* )?
+      ( K_PER K_PARTITION K_LIMIT rows=intValue )?
+      ( K_LIMIT rows=intValue )?
+      ( K_ALLOW K_FILTERING  )?
+   ;
 
-// selectClause
-//     @init{ $isDistinct = false; }
-//     // distinct is a valid column name. By consequence, we need to resolve the ambiguity for "distinct - distinct"
-//     : (K_DISTINCT selectors)=> K_DISTINCT s=selectors { $isDistinct = true; $selectors = s; }
-//     | s=selectors { $selectors = s; }
-//     ;
+selectClause
+    // distinct is a valid column name. By consequence, we need to resolve the ambiguity for "distinct - distinct"
+    : K_DISTINCT s=selectors
+    | s=selectors
+    ;
 
-// selectors
-//     : t1=selector { $expr = new ArrayList<RawSelector>(); $expr.add(t1); } (',' tN=selector { $expr.add(tN); })*
-//     | '\*' { $expr = Collections.<RawSelector>emptyList();}
-//     ;
+selectors
+    : t1=selector (',' tN=selector)*
+    | '*'
+    ;
 
-// selector
-//     @init{ ColumnIdentifier alias = null; }
-//     : us=unaliasedSelector (K_AS c=noncol_ident { alias = c; })? { $s = new RawSelector(us, alias); }
-//     ;
+selector
+    : us=unaliasedSelector (K_AS c=noncol_ident)?
+    ;
 
-// unaliasedSelector
-//     : a=selectionAddition {$s = a;}
-//     ;
+unaliasedSelector
+    : a=selectionAddition
+    ;
 
-// selectionAddition
-//     :   l=selectionMultiplication   {$s = l;}
-//         ( '+' r=selectionMultiplication {$s = Selectable.WithFunction.Raw.newOperation('+', $s, r);}
-//         | '-' r=selectionMultiplication {$s = Selectable.WithFunction.Raw.newOperation('-', $s, r);}
-//         )*
-//     ;
+selectionAddition
+    :   l=selectionMultiplication
+        ( '+' r=selectionMultiplication
+        | '-' r=selectionMultiplication
+        )*
+    ;
 
-// selectionMultiplication
-//     :   l=selectionGroup   {$s = l;}
-//         ( '\*' r=selectionGroup {$s = Selectable.WithFunction.Raw.newOperation('*', $s, r);}
-//         | '/' r=selectionGroup {$s = Selectable.WithFunction.Raw.newOperation('/', $s, r);}
-//         | '%' r=selectionGroup {$s = Selectable.WithFunction.Raw.newOperation('\%', $s, r);}
-//         )*
-//     ;
+selectionMultiplication
+    :   l=selectionGroup
+        ( '*' r=selectionGroup
+        | '/' r=selectionGroup
+        | '%' r=selectionGroup
+        )*
+    ;
 
-// selectionGroup
-//     : (selectionGroupWithField)=>  f=selectionGroupWithField { $s=f; }
-//     | g=selectionGroupWithoutField { $s=g; }
-//     | '-' g=selectionGroup {$s = Selectable.WithFunction.Raw.newNegation(g);}
-//     ;
+selectionGroup
+    : f=selectionGroupWithField
+    | g=selectionGroupWithoutField
+    | '-' h=selectionGroup
+    ;
 
-// selectionGroupWithField
-//     : g=selectionGroupWithoutField m=selectorModifier[g] {$s = m;}
-//     ;
+selectionGroupWithField
+    : g=selectionGroupWithoutField m=selectorModifier+
+    ;
 
-// selectorModifier[Selectable.Raw receiver]
-//     : f=fieldSelectorModifier[receiver] m=selectorModifier[f] { $s = m; }
-//     | '[' ss=collectionSubSelection[receiver] ']' m=selectorModifier[ss] { $s = m; }
-//     | { $s = receiver; }
-//     ;
+selectorModifier
+    : '.' fi=fident
+    | '[' ss=collectionSubSelection ']'
+    ;
 
-// fieldSelectorModifier[Selectable.Raw receiver]
-//     : '.' fi=fident { $s = new Selectable.WithFieldSelection.Raw(receiver, fi); }
-//     ;
+collectionSubSelection
+    : t1=term
+    | t1=term (RANGE (t2=term)?)?
+    | RANGE t2=term
+    ;
 
-// collectionSubSelection [Selectable.Raw receiver]
-//     @init { boolean isSlice=false; }
-//     : ( t1=term ( { isSlice=true; } RANGE (t2=term)? )?
-//       | RANGE { isSlice=true; } t2=term
-//       ) {
-//           $s = isSlice
-//              ? new Selectable.WithSliceSelection.Raw(receiver, t1, t2)
-//              : new Selectable.WithElementSelection.Raw(receiver, t1);
-//       }
-//      ;
+selectionGroupWithoutField
+    : sn=simpleUnaliasedSelector
+    | h=selectionTypeHint
+    | t=selectionTupleOrNestedSelector
+    | l=selectionList
+    | m=selectionMapOrSet
+    // UDTs are equivalent to maps from the syntax point of view, so the final decision will be done in Selectable.WithMapOrUdt
+    ;
 
-// selectionGroupWithoutField
-//     @init { Selectable.Raw tmp = null; }
-//     @after { $s = tmp; }
-//     : sn=simpleUnaliasedSelector  { tmp=sn; }
-//     | (selectionTypeHint)=> h=selectionTypeHint { tmp=h; }
-//     | t=selectionTupleOrNestedSelector { tmp=t; }
-//     | l=selectionList { tmp=l; }
-//     | m=selectionMapOrSet { tmp=m; }
-//     // UDTs are equivalent to maps from the syntax point of view, so the final decision will be done in Selectable.WithMapOrUdt
-//     ;
+selectionTypeHint
+    : '(' ct=comparatorType ')' a=selectionGroupWithoutField
+    ;
 
-// selectionTypeHint
-//     : '(' ct=comparatorType ')' a=selectionGroupWithoutField { $s = new Selectable.WithTypeHint.Raw(ct, a); }
-//     ;
+selectionList
+    : '[' ( t1=unaliasedSelector ( ',' tn=unaliasedSelector )* )? ']'
+    ;
 
-// selectionList
-//     @init { List<Selectable.Raw> l = new ArrayList<>(); }
-//     @after { $s = new Selectable.WithArrayLiteral.Raw(l); }
-//     : '[' ( t1=unaliasedSelector { l.add(t1); } ( ',' tn=unaliasedSelector { l.add(tn); } )* )? ']'
-//     ;
+selectionMapOrSet
+    : '{' t1=unaliasedSelector ( m=selectionMap | st=selectionSet ) '}'
+    | '{' '}'
+    ;
 
-// selectionMapOrSet
-//     : '{' t1=unaliasedSelector ( m=selectionMap[t1] { $s = m; } | st=selectionSet[t1] { $s = st; }) '}'
-//     | '{' '}' { $s = new Selectable.WithSet.Raw(Collections.emptyList());}
-//     ;
+selectionMap
+      : ':' v1=unaliasedSelector ( ',' kn=unaliasedSelector ':' vn=unaliasedSelector )*
+      ;
 
-// selectionMap [Selectable.Raw k1]
-//     @init { List<Pair<Selectable.Raw, Selectable.Raw>> m = new ArrayList<>(); }
-//     @after { $s = new Selectable.WithMapOrUdt.Raw(m); }
-//       : ':' v1=unaliasedSelector   { m.add(Pair.create(k1, v1)); } ( ',' kn=unaliasedSelector ':' vn=unaliasedSelector { m.add(Pair.create(kn, vn)); } )*
-//       ;
+selectionSet
+      : ( ',' tn=unaliasedSelector )*
+      ;
 
-// selectionSet [Selectable.Raw t1]
-//     @init { List<Selectable.Raw> l = new ArrayList<>(); l.add(t1); }
-//     @after { $s = new Selectable.WithSet.Raw(l); }
-//       : ( ',' tn=unaliasedSelector { l.add(tn); } )*
-//       ;
+selectionTupleOrNestedSelector
+    : '(' t1=unaliasedSelector (',' tn=unaliasedSelector )* ')'
+    ;
 
-// selectionTupleOrNestedSelector
-//     @init { List<Selectable.Raw> l = new ArrayList<>(); }
-//     @after { $s = new Selectable.BetweenParenthesesOrWithTuple.Raw(l); }
-//     : '(' t1=unaliasedSelector { l.add(t1); } (',' tn=unaliasedSelector { l.add(tn); } )* ')'
-//     ;
+/*
+ * A single selection. The core of it is selecting a column, but we also allow any term and function, as well as
+ * sub-element selection for UDT.
+ */
+simpleUnaliasedSelector
+    : c=sident
+    | l=selectionLiteral
+    | f=selectionFunction
+    ;
 
-// /*
-//  * A single selection. The core of it is selecting a column, but we also allow any term and function, as well as
-//  * sub-element selection for UDT.
-//  */
-// simpleUnaliasedSelector
-//     : c=sident                                   { $s = c; }
-//     | l=selectionLiteral                         { $s = new Selectable.WithTerm.Raw(l); }
-//     | f=selectionFunction                        { $s = f; }
-//     ;
+selectionFunction
+    : K_COUNT        '(' '*' ')'
+    | K_MAXWRITETIME '(' c=sident m=selectorModifier* ')'
+    | K_WRITETIME    '(' c=sident m=selectorModifier* ')'
+    | K_TTL          '(' c=sident m=selectorModifier* ')'
+    | K_CAST         '(' sn=unaliasedSelector K_AS t=native_type ')'
+    | f=functionName args=selectionFunctionArgs
+    ;
 
-// selectionFunction
-//     : K_COUNT        '(' '\*' ')'                                    { $s = Selectable.WithFunction.Raw.newCountRowsFunction(); }
-//     | K_MAXWRITETIME '(' c=sident m=selectorModifier[c] ')'          { $s = new Selectable.WritetimeOrTTL.Raw(c, m, Selectable.WritetimeOrTTL.Kind.MAX_WRITE_TIME); }
-//     | K_WRITETIME    '(' c=sident m=selectorModifier[c] ')'          { $s = new Selectable.WritetimeOrTTL.Raw(c, m, Selectable.WritetimeOrTTL.Kind.WRITE_TIME); }
-//     | K_TTL          '(' c=sident m=selectorModifier[c] ')'          { $s = new Selectable.WritetimeOrTTL.Raw(c, m, Selectable.WritetimeOrTTL.Kind.TTL); }
-//     | K_CAST         '(' sn=unaliasedSelector K_AS t=native_type ')' { $s = new Selectable.WithCast.Raw(sn, t);}
-//     | f=functionName args=selectionFunctionArgs                      { $s = new Selectable.WithFunction.Raw(f, args); }
-//     ;
-
-// selectionLiteral
-//     : c=constant  { $value = c; }
-//     | K_NULL      { $value = Constants.NULL_LITERAL; }
-//     | m=marker    { $value = m; }
-//     ;
+selectionLiteral
+    : c=constant
+    | K_NULL
+    | m=marker
+    ;
 
 marker
     : ':' id=noncol_ident
     | QMARK
     ;
 
-// selectionFunctionArgs
-//     @init{ $a = new ArrayList<>(); }
-//     : '(' (s1=unaliasedSelector { $a.add(s1); }
-//           ( ',' sn=unaliasedSelector { $a.add(sn); } )*)?
-//       ')'
-//     ;
+selectionFunctionArgs
+    : '(' (s1=unaliasedSelector
+          ( ',' sn=unaliasedSelector )*)?
+      ')'
+    ;
 
-// sident
-//     : t=IDENT              { $id = Selectable.RawIdentifier.forUnquoted($t.text); }
-//     | t=QUOTED_NAME        { $id = Selectable.RawIdentifier.forQuoted($t.text); }
-//     | k=unreserved_keyword { $id = Selectable.RawIdentifier.forUnquoted(k); }
-//     ;
+sident
+    : t=IDENT
+    | t=QUOTED_NAME
+    | k=unreserved_keyword
+    ;
 
-// whereClause
-//     @init{ $clause = new WhereClause.Builder(); }
-//     : relationOrExpression[$clause] (K_AND relationOrExpression[$clause])*
-//     ;
+whereClause
+    : relationOrExpression (K_AND relationOrExpression)*
+    ;
 
-// relationOrExpression [WhereClause.Builder clause]
-//     : relation[$clause]
-//     | customIndexExpression[$clause]
-//     ;
+relationOrExpression
+    : relation
+    | customIndexExpression
+    ;
 
-// customIndexExpression [WhereClause.Builder clause]
-//     @init{QualifiedName name = new QualifiedName();}
-//     : 'expr(' idxName[name] ',' t=term ')' { clause.add(new CustomIndexExpression(name, t));}
-//     ;
+customIndexExpression
+    : 'expr(' idxName ',' t=term ')'
+    ;
 
-// orderByClause[List<Ordering.Raw> orderings]
-//     @init{
-//         Ordering.Direction direction = Ordering.Direction.ASC;
-//     }
-//     : c=cident (K_ANN K_OF t=term)? (K_ASC | K_DESC { direction = Ordering.Direction.DESC; })?
-//     {
-//         Ordering.Raw.Expression expr = (t == null)
-//             ? new Ordering.Raw.SingleColumn(c)
-//             : new Ordering.Raw.Ann(c, t);
-//         orderings.add(new Ordering.Raw(expr, direction));
-//     }
-//     ;
+orderByClause
+    : c=cident (K_ANN K_OF t=term)? (K_ASC | K_DESC)?
+   ;
 
-// groupByClause[List<Selectable.Raw> groups]
-//     : s=unaliasedSelector { groups.add(s); }
-//     ;
+groupByClause
+    : s=unaliasedSelector
+    ;
 
 // /**
 //  * INSERT INTO <CF> (<column>, <column>, <column>, ...)
@@ -1210,12 +1160,12 @@ userPassword
 
 // /** DEFINITIONS **/
 
-// // Like ident, but for case where we take a column name that can be the legacy super column empty name. Importantly,
-// // this should not be used in DDL statements, as we don't want to let users create such column.
-// cident
-//     : EMPTY_QUOTED_NAME    { $id = ColumnIdentifier.getInterned("", true); }
-//     | t=ident              { $id = t; }
-//     ;
+// Like ident, but for case where we take a column name that can be the legacy super column empty name. Importantly,
+// this should not be used in DDL statements, as we don't want to let users create such column.
+cident
+    : EMPTY_QUOTED_NAME
+    | t=ident
+    ;
 
 ident
     : t=IDENT                   # IdentIdent
@@ -1346,10 +1296,10 @@ value
     | m=marker
     ;
 
-// intValue
-//     : t=INTEGER { $value = Constants.Literal.integer($t.text); }
-//     | m=marker  { $value = m; }
-//     ;
+intValue
+    : t=INTEGER
+    | m=marker
+    ;
 
 functionName
      // antlr might try to recover and give a null for f. It will still error out in the end, but FunctionName
@@ -1498,97 +1448,88 @@ propertyValue
     | u=unreserved_keyword
     ;
 
-// singleColumnBetweenValues
-//     @init { List<Term.Raw> list = new ArrayList<>(); }
-//     @after { $terms = Terms.Raw.of(list); }
-//     : t1=term { list.add(t1); } K_AND t2=term { list.add(t2); }
-//     ;
+singleColumnBetweenValues
+    : t1=term K_AND t2=term
+    ;
 
-// relationType
-//     : '='  { $op = Operator.EQ; }
-//     | '<'  { $op = Operator.LT; }
-//     | '<=' { $op = Operator.LTE; }
-//     | '>'  { $op = Operator.GT; }
-//     | '>=' { $op = Operator.GTE; }
-//     | '!=' { $op = Operator.NEQ; }
-//     ;
+relationType
+    : '='
+    | '<'
+    | '<='
+    | '>'
+    | '>='
+    | '!='
+    ;
 
-// relation[WhereClause.Builder clauses]
-//     : name=cident
-//            ( type=relationType t=term { $clauses.add(Relation.singleColumn(name, type, t)); }
-//            | K_BETWEEN betweenValues=singleColumnBetweenValues { $clauses.add(Relation.singleColumn(name, Operator.BETWEEN, betweenValues)); }
-//            | K_LIKE t=term { $clauses.add(Relation.singleColumn(name, Operator.LIKE, t)); }
-//            | K_IS K_NOT K_NULL { $clauses.add(Relation.singleColumn(name, Operator.IS_NOT, Constants.NULL_LITERAL)); }
-//            | rtInOperator=inOperator inValue=singleColumnInValues { $clauses.add(Relation.singleColumn(name, rtInOperator, inValue)); }
-//            | rtContainsOperator=containsOperator t=term { $clauses.add(Relation.singleColumn(name, rtContainsOperator, t)); }
-//            )
-//     | K_TOKEN l=tupleOfIdentifiers
-//         ( type=relationType t=term { $clauses.add(Relation.token(l, type, t)); }
-//         | K_BETWEEN betweenValues=singleColumnBetweenValues { $clauses.add(Relation.token(l, Operator.BETWEEN, betweenValues)); }
-//         )
-//     | name=cident '[' key=term ']' type=relationType t=term { $clauses.add(Relation.mapElement(name, key, type, t)); }
-//     | ids=tupleOfIdentifiers
-//         ( rt=inOperator inValue=multiColumnInValues { $clauses.add(Relation.multiColumn(ids, rt, inValue)); }
-//         | type=relationType v=multiColumnValue {$clauses.add(Relation.multiColumn(ids, type, v)); }
-//         | K_BETWEEN t1=multiColumnValue K_AND t2=multiColumnValue { $clauses.add(Relation.multiColumn(ids, Operator.BETWEEN, Terms.Raw.of(List.of(t1, t2)))); }
-//         )
-//     | '(' relation[$clauses] ')'
-//     ;
+relation
+    : name=cident
+           ( type=relationType t=term
+           | K_BETWEEN betweenValues=singleColumnBetweenValues
+           | K_LIKE t=term
+           | K_IS K_NOT K_NULL
+           | rtInOperator=inOperator inValue=singleColumnInValues
+           | rtContainsOperator=containsOperator t=term
+           )                                                            # RelationColumn
+    | K_TOKEN l=tupleOfIdentifiers
+        ( type=relationType t=term
+        | K_BETWEEN betweenValues=singleColumnBetweenValues
+        )                                                               # RelationToken
+    | name=cident '[' key=term ']' type=relationType t=term             # RelationCollection
+    | ids=tupleOfIdentifiers
+        ( rt=inOperator minValue=multiColumnInValues
+        | type=relationType v=multiColumnValue
+        | K_BETWEEN t1=multiColumnValue K_AND t2=multiColumnValue
+        )                                                               # RelationTuple
+    | '(' relation ')'                                                  # RelationRecursive
+    ;
 
-// containsOperator
-//     : K_CONTAINS { o = Operator.CONTAINS; } (K_KEY { o = Operator.CONTAINS_KEY; })?
-//     | K_NOT K_CONTAINS { o = Operator.NOT_CONTAINS; } (K_KEY { o = Operator.NOT_CONTAINS_KEY; })?
-//     ;
+containsOperator
+    : K_CONTAINS (K_KEY)?
+    | K_NOT K_CONTAINS (K_KEY)?
+    ;
 
-// inOperator
-//     : K_IN { o = Operator.IN; }
-//     | K_NOT K_IN { o = Operator.NOT_IN; }
-//     ;
+inOperator
+    : K_IN
+    | K_NOT K_IN
+    ;
 
-// inMarker
-//     : QMARK { $marker = newINBindVariables(null); }
-//     | ':' name=noncol_ident { $marker = newINBindVariables(name); }
-//     ;
+inMarker
+    : QMARK
+    | ':' name=noncol_ident
+    ;
 
-// tupleOfIdentifiers
-//     @init { $ids = new ArrayList<ColumnIdentifier>(); }
-//     : '(' n1=cident { $ids.add(n1); } (',' ni=cident { $ids.add(ni); })* ')'
-//     ;
+tupleOfIdentifiers
+    : '(' n1=cident (',' ni=cident)* ')'
+    ;
 
-// singleColumnInValues
-//     : t=terms     { $terms = t;}
-//     | m=inMarker  { $terms = m;}
-//     ;
+singleColumnInValues
+    : t=terms
+    | m=inMarker
+    ;
 
-// terms
-//     @init { List<Term.Raw> list = new ArrayList<>(); }
-//     @after { $terms = Terms.Raw.of(list); }
-//     : '(' ( t1 = term { list.add(t1); } (',' ti=term { list.add(ti); })* )? ')'
-//     ;
+terms
+    : '(' ( t1 = term (',' ti=term)* )? ')'
+    ;
 
-// multiColumnValue
-//     : l=tupleLiteral { $term = l; } /* (a, b, c) > (1, 2, 3) or (a, b, c) > (?, ?, ?) */
-//     | m=marker       { $term = m; } /* (a, b, c) >= ? */
-//     ;
+multiColumnValue
+    : l=tupleLiteral /* (a, b, c) > (1, 2, 3) or (a, b, c) > (?, ?, ?) */
+    | m=marker       /* (a, b, c) >= ? */
+    ;
 
-// multiColumnInValues
-//     : '(' ')'                    { $terms = Terms.Raw.of();}  /* (a, b, c) IN () */
-//     | m=inMarker                 { $terms = m; }              /* (a, b, c) IN ? */
-//     | tl=tupleOfTupleLiterals    { $terms = tl; }             /* (a, b, c) IN ((1, 2, 3), (4, 5, 6), ...) */
-//     | tm=tupleOfMarkersForTuples { $terms = tm; }             /* (a, b, c) IN (?, ?, ...) */
-//     ;
+multiColumnInValues
+    : '(' ')'                      /* (a, b, c) IN () */
+    | m=inMarker                   /* (a, b, c) IN ? */
+    | tl=tupleOfTupleLiterals      /* (a, b, c) IN ((1, 2, 3), (4, 5, 6), ...) */
+    | tm=tupleOfMarkersForTuples   /* (a, b, c) IN (?, ?, ...) */
+    ;
 
-// tupleOfTupleLiterals
-//     @init { List<Term.Raw> list = new ArrayList<>(); }
-//     @after { $literals = Terms.Raw.of(list); }
-//     : '(' t1=tupleLiteral { list.add(t1); } (',' ti=tupleLiteral { list.add(ti); })* ')'
-//     ;
+tupleOfTupleLiterals
+    : '(' t1=tupleLiteral (',' ti=tupleLiteral)* ')'
+    ;
 
-// tupleOfMarkersForTuples
-//     @init { List<Term.Raw> list = new ArrayList<>(); }
-//     @after { $markers = Terms.Raw.of(list); }
-//     : '(' m1=marker { list.add(m1); } (',' mi=marker { list.add(mi); })* ')'
-//     ;
+tupleOfMarkersForTuples
+    : '(' m1=marker (',' mi=marker)* ')'
+    ;
 
 comparatorType
     : n=native_type
@@ -2021,13 +1962,11 @@ RANGE
     : '..'
     ;
 
-/*
- * Normally a lexer only emits one token at a time, but ours is tricked out
- * to support multiple (see @lexer::members near the top of the grammar).
- */
+// We need to handle disambiguation between ranges and floats. The negation
+// operator is required so that 1.. is not parsed as FLOAT(1.) '.'.
 FLOAT
     : INTEGER EXPONENT
-    | INTEGER '.' DIGIT* EXPONENT?
+    | INTEGER '.' ~'.' DIGIT* EXPONENT?
     ;
 
 /*

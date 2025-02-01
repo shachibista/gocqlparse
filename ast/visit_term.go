@@ -9,6 +9,16 @@ func (v *Visitor) VisitTerm(ctx *parser.TermContext) any {
 	return v.Visit(ctx.GetT())
 }
 
+func (v *Visitor) VisitTerms(ctx *parser.TermsContext) any {
+	var terms []Term
+
+	for _, t := range ctx.AllTerm() {
+		terms = append(terms, v.Visit(t))
+	}
+
+	return terms
+}
+
 func (v *Visitor) VisitTermAddition(ctx *parser.TermAdditionContext) any {
 	lterm := v.Visit(ctx.GetL())
 
@@ -21,11 +31,11 @@ func (v *Visitor) VisitTermAddition(ctx *parser.TermAdditionContext) any {
 	otype := ctx.GetChild(1).(antlr.TerminalNode).GetText()
 
 	if otype != "+" && otype != "-" {
-		v.Err(ctx, "unknown operator: "+otype)
+		v.Err(ctx, "unrecognized operator: "+otype)
 		return nil
 	}
 
-	return &TermOperation{
+	return &TermBinaryOperation{
 		Operator: Operator(otype),
 		Left:     lterm,
 		Right:    rterm,
@@ -44,11 +54,11 @@ func (v *Visitor) VisitTermMultiplication(ctx *parser.TermMultiplicationContext)
 	otype := ctx.GetChild(1).(antlr.TerminalNode).GetText()
 
 	if otype != "*" && otype != "/" && otype != "%" {
-		v.Err(ctx, "unknown operation: "+otype)
+		v.Err(ctx, "unrecognized operation: "+otype)
 		return nil
 	}
 
-	return &TermOperation{
+	return &TermBinaryOperation{
 		Operator: Operator(otype),
 		Left:     lterm,
 		Right:    rterm,
@@ -66,13 +76,13 @@ func (v *Visitor) VisitSimpleTerm(ctx *parser.SimpleTermContext) any {
 	case ctx.GetF() != nil:
 		return v.Visit(ctx.GetF())
 	case ctx.GetC() != nil:
-		return &TermOperation{
+		return &TermBinaryOperation{
 			Operator: LiteralCastOperator,
 			Left:     v.Visit(ctx.GetC()),
 			Right:    v.Visit(ctx.GetT()),
 		}
 	case ctx.K_CAST() != nil:
-		return &TermOperation{
+		return &TermBinaryOperation{
 			Operator: CastOperator,
 			Left:     v.Visit(ctx.GetT()),
 			Right:    v.Visit(ctx.GetN()),
@@ -80,7 +90,7 @@ func (v *Visitor) VisitSimpleTerm(ctx *parser.SimpleTermContext) any {
 	default:
 	}
 
-	v.Err(ctx, "unknown term")
+	v.Err(ctx, "unrecognized term")
 
 	return nil
 }
@@ -93,6 +103,8 @@ func (v *Visitor) VisitValue(ctx *parser.ValueContext) any {
 		return v.Visit(ctx.GetL())
 	case ctx.GetU() != nil:
 		return v.Visit(ctx.GetU())
+	case ctx.GetT() != nil:
+		return v.Visit(ctx.GetT())
 	case ctx.K_NULL() != nil:
 		return NullLiteral
 	case ctx.GetM() != nil:
@@ -150,13 +162,23 @@ func (v *Visitor) VisitCollectionLiteral(ctx *parser.CollectionLiteralContext) a
 
 			return elements
 		} else {
-			v.Err(ctx, "unknown literal")
+			v.Err(ctx, "unrecognized literal")
 
 			return nil
 		}
 	}
 
 	return SetLiteral{}
+}
+
+func (v *Visitor) VisitTupleLiteral(ctx *parser.TupleLiteralContext) any {
+	tup := TupleLiteral{}
+
+	for _, t := range ctx.AllTerm() {
+		tup = append(tup, v.Visit(t))
+	}
+
+	return &tup
 }
 
 func (v *Visitor) VisitUsertypeLiteral(ctx *parser.UsertypeLiteralContext) any {

@@ -17,8 +17,92 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#useStatement.
 	VisitUseStatement(ctx *UseStatementContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#selectStatement.
+	VisitSelectStatement(ctx *SelectStatementContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectClause.
+	VisitSelectClause(ctx *SelectClauseContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectors.
+	VisitSelectors(ctx *SelectorsContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selector.
+	VisitSelector(ctx *SelectorContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#unaliasedSelector.
+	VisitUnaliasedSelector(ctx *UnaliasedSelectorContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionAddition.
+	VisitSelectionAddition(ctx *SelectionAdditionContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionMultiplication.
+	VisitSelectionMultiplication(ctx *SelectionMultiplicationContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionGroup.
+	VisitSelectionGroup(ctx *SelectionGroupContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionGroupWithField.
+	VisitSelectionGroupWithField(ctx *SelectionGroupWithFieldContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectorModifier.
+	VisitSelectorModifier(ctx *SelectorModifierContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#collectionSubSelection.
+	VisitCollectionSubSelection(ctx *CollectionSubSelectionContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionGroupWithoutField.
+	VisitSelectionGroupWithoutField(ctx *SelectionGroupWithoutFieldContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionTypeHint.
+	VisitSelectionTypeHint(ctx *SelectionTypeHintContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionList.
+	VisitSelectionList(ctx *SelectionListContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionMapOrSet.
+	VisitSelectionMapOrSet(ctx *SelectionMapOrSetContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionMap.
+	VisitSelectionMap(ctx *SelectionMapContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionSet.
+	VisitSelectionSet(ctx *SelectionSetContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionTupleOrNestedSelector.
+	VisitSelectionTupleOrNestedSelector(ctx *SelectionTupleOrNestedSelectorContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#simpleUnaliasedSelector.
+	VisitSimpleUnaliasedSelector(ctx *SimpleUnaliasedSelectorContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionFunction.
+	VisitSelectionFunction(ctx *SelectionFunctionContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionLiteral.
+	VisitSelectionLiteral(ctx *SelectionLiteralContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#marker.
 	VisitMarker(ctx *MarkerContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#selectionFunctionArgs.
+	VisitSelectionFunctionArgs(ctx *SelectionFunctionArgsContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#sident.
+	VisitSident(ctx *SidentContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#whereClause.
+	VisitWhereClause(ctx *WhereClauseContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#relationOrExpression.
+	VisitRelationOrExpression(ctx *RelationOrExpressionContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#customIndexExpression.
+	VisitCustomIndexExpression(ctx *CustomIndexExpressionContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#orderByClause.
+	VisitOrderByClause(ctx *OrderByClauseContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#groupByClause.
+	VisitGroupByClause(ctx *GroupByClauseContext) interface{}
 
 	// Visit a parse tree produced by Cql3Parser#createKeyspaceStatement.
 	VisitCreateKeyspaceStatement(ctx *CreateKeyspaceStatementContext) interface{}
@@ -128,6 +212,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#userPassword.
 	VisitUserPassword(ctx *UserPasswordContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#cident.
+	VisitCident(ctx *CidentContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#IdentIdent.
 	VisitIdentIdent(ctx *IdentIdentContext) interface{}
 
@@ -215,6 +302,9 @@ type Cql3Visitor interface {
 	// Visit a parse tree produced by Cql3Parser#value.
 	VisitValue(ctx *ValueContext) interface{}
 
+	// Visit a parse tree produced by Cql3Parser#intValue.
+	VisitIntValue(ctx *IntValueContext) interface{}
+
 	// Visit a parse tree produced by Cql3Parser#functionName.
 	VisitFunctionName(ctx *FunctionNameContext) interface{}
 
@@ -253,6 +343,57 @@ type Cql3Visitor interface {
 
 	// Visit a parse tree produced by Cql3Parser#propertyValue.
 	VisitPropertyValue(ctx *PropertyValueContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#singleColumnBetweenValues.
+	VisitSingleColumnBetweenValues(ctx *SingleColumnBetweenValuesContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#relationType.
+	VisitRelationType(ctx *RelationTypeContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#RelationColumn.
+	VisitRelationColumn(ctx *RelationColumnContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#RelationToken.
+	VisitRelationToken(ctx *RelationTokenContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#RelationCollection.
+	VisitRelationCollection(ctx *RelationCollectionContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#RelationTuple.
+	VisitRelationTuple(ctx *RelationTupleContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#RelationRecursive.
+	VisitRelationRecursive(ctx *RelationRecursiveContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#containsOperator.
+	VisitContainsOperator(ctx *ContainsOperatorContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#inOperator.
+	VisitInOperator(ctx *InOperatorContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#inMarker.
+	VisitInMarker(ctx *InMarkerContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#tupleOfIdentifiers.
+	VisitTupleOfIdentifiers(ctx *TupleOfIdentifiersContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#singleColumnInValues.
+	VisitSingleColumnInValues(ctx *SingleColumnInValuesContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#terms.
+	VisitTerms(ctx *TermsContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#multiColumnValue.
+	VisitMultiColumnValue(ctx *MultiColumnValueContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#multiColumnInValues.
+	VisitMultiColumnInValues(ctx *MultiColumnInValuesContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#tupleOfTupleLiterals.
+	VisitTupleOfTupleLiterals(ctx *TupleOfTupleLiteralsContext) interface{}
+
+	// Visit a parse tree produced by Cql3Parser#tupleOfMarkersForTuples.
+	VisitTupleOfMarkersForTuples(ctx *TupleOfMarkersForTuplesContext) interface{}
 
 	// Visit a parse tree produced by Cql3Parser#comparatorType.
 	VisitComparatorType(ctx *ComparatorTypeContext) interface{}

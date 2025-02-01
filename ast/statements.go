@@ -165,3 +165,55 @@ type AlterUserStatement struct {
 	Password  Password
 	Superuser bool
 }
+
+type OrderByClause struct {
+	Column                       Identifier
+	Ascending                    bool
+	ApproximateNearestNeighborOf Term
+}
+
+type SelectorModifier interface{}
+
+type Projection struct {
+	Expression Selector
+	Alias      Identifier
+}
+
+type Selector interface{}
+
+type TupleSelector struct {
+	Elements []Selector
+}
+
+type ColumnSelector struct {
+	Name      Identifier
+	Modifiers []SelectorModifier
+}
+
+type FieldSelector struct {
+	Name Identifier
+}
+
+type CollectionSelector struct {
+	Index Term
+	Range *ListSliceRange
+}
+
+type ListSliceRange struct {
+	Left  Term
+	Right Term
+}
+
+type SelectStatement struct {
+	Distinct    bool
+	IsJSON      bool
+	Projections []*Projection
+	From        *ObjectRef
+	// Cassandra only supports AND relation.
+	Where             []*Relation
+	GroupBy           []Selector
+	OrderBy           []*OrderByClause
+	PerPartitionLimit int
+	Limit             int
+	AllowFiltering    bool
+}

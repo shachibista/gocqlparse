@@ -24,10 +24,15 @@ const (
 	RemainderOperator      Operator = "%"
 )
 
-type TermOperation struct {
+type TermBinaryOperation struct {
 	Operator Operator
 	Left     Term
 	Right    Term
+}
+
+type TermUnaryOperation struct {
+	Operator Operator
+	Operand  Term
 }
 
 type SimpleTerm struct{}

@@ -20,7 +20,119 @@ func (v *BaseCql3Visitor) VisitUseStatement(ctx *UseStatementContext) interface{
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitSelectStatement(ctx *SelectStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectClause(ctx *SelectClauseContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectors(ctx *SelectorsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelector(ctx *SelectorContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitUnaliasedSelector(ctx *UnaliasedSelectorContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionAddition(ctx *SelectionAdditionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionMultiplication(ctx *SelectionMultiplicationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionGroup(ctx *SelectionGroupContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionGroupWithField(ctx *SelectionGroupWithFieldContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectorModifier(ctx *SelectorModifierContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitCollectionSubSelection(ctx *CollectionSubSelectionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionGroupWithoutField(ctx *SelectionGroupWithoutFieldContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionTypeHint(ctx *SelectionTypeHintContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionList(ctx *SelectionListContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionMapOrSet(ctx *SelectionMapOrSetContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionMap(ctx *SelectionMapContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionSet(ctx *SelectionSetContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionTupleOrNestedSelector(ctx *SelectionTupleOrNestedSelectorContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSimpleUnaliasedSelector(ctx *SimpleUnaliasedSelectorContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionFunction(ctx *SelectionFunctionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionLiteral(ctx *SelectionLiteralContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitMarker(ctx *MarkerContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSelectionFunctionArgs(ctx *SelectionFunctionArgsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSident(ctx *SidentContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitWhereClause(ctx *WhereClauseContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitRelationOrExpression(ctx *RelationOrExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitCustomIndexExpression(ctx *CustomIndexExpressionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitOrderByClause(ctx *OrderByClauseContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitGroupByClause(ctx *GroupByClauseContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -168,6 +280,10 @@ func (v *BaseCql3Visitor) VisitUserPassword(ctx *UserPasswordContext) interface{
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitCident(ctx *CidentContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitIdentIdent(ctx *IdentIdentContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -284,6 +400,10 @@ func (v *BaseCql3Visitor) VisitValue(ctx *ValueContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseCql3Visitor) VisitIntValue(ctx *IntValueContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseCql3Visitor) VisitFunctionName(ctx *FunctionNameContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -333,6 +453,74 @@ func (v *BaseCql3Visitor) VisitProperty(ctx *PropertyContext) interface{} {
 }
 
 func (v *BaseCql3Visitor) VisitPropertyValue(ctx *PropertyValueContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSingleColumnBetweenValues(ctx *SingleColumnBetweenValuesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitRelationType(ctx *RelationTypeContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitRelationColumn(ctx *RelationColumnContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitRelationToken(ctx *RelationTokenContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitRelationCollection(ctx *RelationCollectionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitRelationTuple(ctx *RelationTupleContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitRelationRecursive(ctx *RelationRecursiveContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitContainsOperator(ctx *ContainsOperatorContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitInOperator(ctx *InOperatorContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitInMarker(ctx *InMarkerContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitTupleOfIdentifiers(ctx *TupleOfIdentifiersContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitSingleColumnInValues(ctx *SingleColumnInValuesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitTerms(ctx *TermsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitMultiColumnValue(ctx *MultiColumnValueContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitMultiColumnInValues(ctx *MultiColumnInValuesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitTupleOfTupleLiterals(ctx *TupleOfTupleLiteralsContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseCql3Visitor) VisitTupleOfMarkersForTuples(ctx *TupleOfMarkersForTuplesContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
