@@ -15,7 +15,7 @@ var NullLiteral nullLiteral
 type Operator string
 
 const (
-	LiteralCastOperator    Operator = "literal_cast"
+	TypeHint               Operator = "type_hint"
 	CastOperator           Operator = "cast"
 	AdditionOperator       Operator = "+"
 	SubtractionOperator    Operator = "-"

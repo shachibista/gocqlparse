@@ -1098,7 +1098,7 @@ func TestParseTerm(t *testing.T) {
 		{
 			input: "(vector<int, 3>) [1, 2, 3]",
 			expected: &ast.TermBinaryOperation{
-				Operator: ast.LiteralCastOperator,
+				Operator: ast.TypeHint,
 				Left: &ast.VectorType{
 					Elem:       &ast.NativeType{"int"},
 					Dimensions: 3,

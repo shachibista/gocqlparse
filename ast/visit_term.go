@@ -77,7 +77,7 @@ func (v *Visitor) VisitSimpleTerm(ctx *parser.SimpleTermContext) any {
 		return v.Visit(ctx.GetF())
 	case ctx.GetC() != nil:
 		return &TermBinaryOperation{
-			Operator: LiteralCastOperator,
+			Operator: TypeHint,
 			Left:     v.Visit(ctx.GetC()),
 			Right:    v.Visit(ctx.GetT()),
 		}

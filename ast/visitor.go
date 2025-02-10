@@ -728,7 +728,7 @@ func (v *Visitor) VisitSelectionFunctionArgs(ctx *parser.SelectionFunctionArgsCo
 
 func (v *Visitor) VisitSelectionTypeHint(ctx *parser.SelectionTypeHintContext) any {
 	return &TermBinaryOperation{
-		Operator: LiteralCastOperator,
+		Operator: TypeHint,
 		Left:     v.Visit(ctx.GetCt()),
 		Right:    v.Visit(ctx.GetA()),
 	}
